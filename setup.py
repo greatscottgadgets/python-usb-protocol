@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
 
     # Vitals
-    name='usb-protocol',
+    name='usb_protocol',
     license='BSD',
     url='https://github.com/usb-tool/luna',
     author='Katherine J. Temkin',

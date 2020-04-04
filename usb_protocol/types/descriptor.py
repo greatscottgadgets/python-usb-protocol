@@ -3,6 +3,7 @@
 #
 """ Type elements for defining USB descriptors. """
 
+import unittest
 import construct
 
 class DescriptorFormat(construct.Struct):
@@ -76,6 +77,28 @@ class DescriptorNumber(construct.Const):
         return self.number
 
 
+class BCDFieldAdapter(construct.Adapter):
+    """ Construct adapter that dynamically parses BCD fields. """
+
+    def _decode(self, obj, context, path):
+        hex_string = f"{obj:04x}"
+        return float(f"{hex_string[0:2]}.{hex_string[2:]}")
+
+
+    def _encode(self, obj, context, path):
+
+        # Ensure the data is parseable.
+        if (obj * 100) % 1:
+            raise AssertionError("BCD fields must be in the format XX.YY")
+
+        # Break the object down into its component parts...
+        integer = int(obj)
+        percent = int((obj * 100) % 100)
+
+        # ... and squish them into an integer.
+        return int(f"{integer:02}{percent:02}", 16)
+
+
 
 class DescriptorField(construct.Subconstruct):
     """
@@ -90,12 +113,12 @@ class DescriptorField(construct.Subconstruct):
     # FIXME: these are really primitive views of these types;
     # we should extend these to get implicit parsing wherever possible
     USB_TYPES = {
-        'b'   : construct.Optional(construct.Int8ul),
-        'bcd' : construct.Optional(construct.Int16ul),  # TODO: Create a BCD parser for this
-        'i'   : construct.Optional(construct.Int8ul),
-        'id'  : construct.Optional(construct.Int16ul),
-        'bm'  : construct.Optional(construct.Int8ul),
-        'w'   : construct.Optional(construct.Int16ul),
+        'b'   : construct.Int8ul,
+        'bcd' : BCDFieldAdapter(construct.Int16ul),  # TODO: Create a BCD parser for this
+        'i'   : construct.Int8ul,
+        'id'  : construct.Int16ul,
+        'bm'  : construct.Int8ul,
+        'w'   : construct.Int16ul,
     }
 
     @staticmethod
@@ -128,12 +151,26 @@ class DescriptorField(construct.Subconstruct):
             raise ValueError("field names must be formatted per the USB standard!")
 
 
-    def __init__(self, description=""):
+    def __init__(self, description="", default=None):
         self.description = description
+        self.default = default
 
 
     def __rtruediv__(self, field_name):
         field_type = self._get_type_for_name(field_name)
 
-        # wew does construct make this look weird
-        return (field_name / field_type) * self.description
+        # Build our subconstruct. Construct makes this look super weird,
+        # but this is actually "we have a field with <field_name> of type <field_type>".
+        # In long form, we'll call it "description".
+        subconstruct = (field_name / field_type) * self.description
+
+        if self.default is not None:
+            return construct.Default(subconstruct, self.default)
+        else:
+            return subconstruct
+
+
+# Convenience type that gets a descriptor's own length.
+DescriptorLength = \
+     construct.Rebuild(construct.Int8ul, construct.len_(construct.this)) \
+     * "Descriptor Length"

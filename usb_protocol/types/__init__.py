@@ -414,3 +414,228 @@ LANGUAGE_NAMES = {
     0xf8ff: "HID (Vendor Defined 3)",
     0xfcff: "HID (Vendor Defined 4)",
 }
+
+
+class LanguageIDs(IntEnum):
+    AFRIKAANS                  = 0X0436
+    ALBANIAN                   = 0X041C
+    ARABIC_SAUDI_ARABIA        = 0X0401
+    ARABIC_IRAQ                = 0X0801
+    ARABIC_EGYPT               = 0X0C01
+    ARABIC_LIBYA               = 0X1001
+    ARABIC_ALGERIA             = 0X1401
+    ARABIC_MOROCCO             = 0X1801
+    ARABIC_TUNISIA             = 0X1C01
+    ARABIC_OMAN                = 0X2001
+    ARABIC_YEMEN               = 0X2401
+    ARABIC_SYRIA               = 0X2801
+    ARABIC_JORDAN              = 0X2C01
+    ARABIC_LEBANON             = 0X3001
+    ARABIC_KUWAIT              = 0X3401
+    ARABIC_UAE                 = 0X3801
+    ARABIC_BAHRAIN             = 0X3C01
+    ARABIC_QATAR               = 0X4001
+    ARMENIAN                   = 0X042B
+    ASSAMESE                   = 0X044D
+    AZERI_LATIN                = 0X042C
+    AZERI_CYRILLIC             = 0X082C
+    BASQUE                     = 0X042D
+    BELARUSSIAN                = 0X0423
+    BENGALI                    = 0X0445
+    BULGARIAN                  = 0X0402
+    BURMESE                    = 0X0455
+    CATALAN                    = 0X0403
+    CHINESE_TAIWAN             = 0X0404
+    CHINESE_PRC                = 0X0804
+    CHINESE_HONG_KONG          = 0X0C04
+    CHINESE_SINGAPORE          = 0X1004
+    CHINESE_MACAU_SAR          = 0X1404
+    CROATIAN                   = 0X041A
+    CZECH                      = 0X0405
+    DANISH                     = 0X0406
+    DUTCH_NETHERLANDS          = 0X0413
+    DUTCH_BELGIUM              = 0X0813
+    ENGLISH_US                 = 0X0409
+    ENGLISH_UNITED_KINGDOM     = 0X0809
+    ENGLISH_AUSTRALIAN         = 0X0C09
+    ENGLISH_CANADIAN           = 0X1009
+    ENGLISH_NEW_ZEALAND        = 0X1409
+    ENGLISH_IRELAND            = 0X1809
+    ENGLISH_SOUTH_AFRICA       = 0X1C09
+    ENGLISH_JAMAICA            = 0X2009
+    ENGLISH_CARIBBEAN          = 0X2409
+    ENGLISH_BELIZE             = 0X2809
+    ENGLISH_TRINIDAD           = 0X2C09
+    ENGLISH_ZIMBABWE           = 0X3009
+    ENGLISH_PHILIPPINES        = 0X3409
+    ESTONIAN                   = 0X0425
+    FAEROESE                   = 0X0438
+    FARSI                      = 0X0429
+    FINNISH                    = 0X040B
+    FRENCH_STANDARD            = 0X040C
+    FRENCH_BELGIAN             = 0X080C
+    FRENCH_CANADIAN            = 0X0C0C
+    FRENCH_SWITZERLAND         = 0X100C
+    FRENCH_LUXEMBOURG          = 0X140C
+    FRENCH_MONACO              = 0X180C
+    GEORGIAN                   = 0X0437
+    GERMAN_STANDARD            = 0X0407
+    GERMAN_SWITZERLAND         = 0X0807
+    GERMAN_AUSTRIA             = 0X0C07
+    GERMAN_LUXEMBOURG          = 0X1007
+    GERMAN_LIECHTENSTEIN       = 0X1407
+    GREEK                      = 0X0408
+    GUJARATI                   = 0X0447
+    HEBREW                     = 0X040D
+    HINDI                      = 0X0439
+    HUNGARIAN                  = 0X040E
+    ICELANDIC                  = 0X040F
+    INDONESIAN                 = 0X0421
+    ITALIAN_STANDARD           = 0X0410
+    ITALIAN_SWITZERLAND        = 0X0810
+    JAPANESE                   = 0X0411
+    KANNADA                    = 0X044B
+    KASHMIRI_INDIA             = 0X0860
+    KAZAKH                     = 0X043F
+    KONKANI                    = 0X0457
+    KOREAN                     = 0X0412
+    KOREAN_JOHAB               = 0X0812
+    LATVIAN                    = 0X0426
+    LITHUANIAN                 = 0X0427
+    LITHUANIAN_CLASSIC         = 0X0827
+    MACEDONIAN                 = 0X042F
+    MALAY_MALAYSIAN            = 0X043E
+    MALAY_BRUNEI_DARUSSALAM    = 0X083E
+    MALAYALAM                  = 0X044C
+    MANIPURI                   = 0X0458
+    MARATHI                    = 0X044E
+    NEPALI_INDIA               = 0X0861
+    NORWEGIAN_BOKMAL           = 0X0414
+    NORWEGIAN_NYNORSK          = 0X0814
+    ORIYA                      = 0X0448
+    POLISH                     = 0X0415
+    PORTUGUESE_BRAZIL          = 0X0416
+    PORTUGUESE_STANDARD        = 0X0816
+    PUNJABI                    = 0X0446
+    ROMANIAN                   = 0X0418
+    RUSSIAN                    = 0X0419
+    SANSKRIT                   = 0X044F
+    SERBIAN_CYRILLIC           = 0X0C1A
+    SERBIAN_LATIN              = 0X081A
+    SINDHI                     = 0X0459
+    SLOVAK                     = 0X041B
+    SLOVENIAN                  = 0X0424
+    SPANISH_TRADITIONAL_SORT   = 0X040A
+    SPANISH_MEXICAN            = 0X080A
+    SPANISH_MODERN_SORT        = 0X0C0A
+    SPANISH_GUATEMALA          = 0X100A
+    SPANISH_COSTA_RICA         = 0X140A
+    SPANISH_PANAMA             = 0X180A
+    SPANISH_DOMINICAN_REPUBLIC = 0X1C0A
+    SPANISH_VENEZUELA          = 0X200A
+    SPANISH_COLOMBIA           = 0X240A
+    SPANISH_PERU               = 0X280A
+    SPANISH_ARGENTINA          = 0X2C0A
+    SPANISH_ECUADOR            = 0X300A
+    SPANISH_CHILE              = 0X340A
+    SPANISH_URUGUAY            = 0X380A
+    SPANISH_PARAGUAY           = 0X3C0A
+    SPANISH_BOLIVIA            = 0X400A
+    SPANISH_EL_SALVADOR        = 0X440A
+    SPANISH_HONDURAS           = 0X480A
+    SPANISH_NICARAGUA          = 0X4C0A
+    SPANISH_PUERTO_RICO        = 0X500A
+    SUTU                       = 0X0430
+    SWAHILI_KENYA              = 0X0441
+    SWEDISH                    = 0X041D
+    SWEDISH_FINLAND            = 0X081D
+    TAMIL                      = 0X0449
+    TATAR_TATARSTAN            = 0X0444
+    TELUGU                     = 0X044A
+    THAI                       = 0X041E
+    TURKISH                    = 0X041F
+    UKRAINIAN                  = 0X0422
+    URDU_PAKISTAN              = 0X0420
+    URDU_INDIA                 = 0X0820
+    UZBEK_LATIN                = 0X0443
+    UZBEK_CYRILLIC             = 0X0843
+    VIETNAMESE                 = 0X042A
+    HID_USAGE_DATA_DESCRIPTOR  = 0X04FF
+    HID_VENDOR_DEFINED_1       = 0XF0FF
+    HID_VENDOR_DEFINED_2       = 0XF4FF
+    HID_VENDOR_DEFINED_3       = 0XF8FF
+    HID_VENDOR_DEFINED_4       = 0XFCFF
+
+
+class DescriptorTypes(IntEnum):
+    DEVICE                    = 1
+    CONFIGURATION             = 2
+    STRING                    = 3
+    INTERFACE                 = 4
+    ENDPOINT                  = 5
+    DEVICE_QUALIFIER          = 6
+    OTHER_SPEED_CONFIGURATION = 7
+    INTERFACE_POWER           = 8
+    HID                       = 33
+    REPORT                    = 34
+
+
+class USBSynchronizationType(IntEnum):
+    NONE         = 0x00
+    ASYNC        = 0x01
+    ADAPTIVE     = 0x02
+    SYNCHRONOUS  = 0x03
+
+
+class USBUsageType(IntEnum):
+    DATA              = 0
+    FEEDBACK          = 1
+    IMPLICIT_FEEDBACK = 2
+
+
+class USBStandardRequests(IntEnum):
+    GET_STATUS        = 0
+    CLEAR_FEATURE     = 1
+    SET_FEATURE       = 3
+    SET_ADDRESS       = 5
+    GET_DESCRIPTOR    = 6
+    SET_DESCRIPTOR    = 7
+    GET_CONFIGURATION = 8
+    SET_CONFIGURATION = 9
+    GET_INTERFACE     = 10
+    SET_INTERFACE     = 11
+    SYNCH_FRAME       = 12
+
+
+class USBTransferType(IntEnum):
+    CONTROL     = 0
+    ISOCHRONOUS = 1
+    BULK        = 2
+    INTERRUPT   = 3
+
+
+class USBSynchronizationType(IntEnum):
+    NONE         = 0x00
+    ASYNC        = 0x01
+    ADAPTIVE     = 0x02
+    SYNCHRONOUS  = 0x03
+
+
+class USBUsageType(IntEnum):
+    DATA              = 0
+    FEEDBACK          = 1
+    IMPLICIT_FEEDBACK = 2
+
+
+class USBStandardRequests(IntEnum):
+    GET_STATUS        = 0
+    CLEAR_FEATURE     = 1
+    SET_FEATURE       = 3
+    SET_ADDRESS       = 5
+    GET_DESCRIPTOR    = 6
+    SET_DESCRIPTOR    = 7
+    GET_CONFIGURATION = 8
+    SET_CONFIGURATION = 9
+    GET_INTERFACE     = 10
+    SET_INTERFACE     = 11
+    SYNCH_FRAME       = 12

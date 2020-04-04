@@ -64,6 +64,14 @@ class ConstructEmitter:
             raise KeyError(f"missing necessary field: {e}")
 
 
+    def __getattr__(self, name):
+        """ Retrieves an emitter field, if possible. """
+
+        if name in self.fields:
+            return self.fields[name]
+        else:
+            raise AttributeError(f"descriptor emitter has no property {name}")
+
 
 class ConstructEmitterTest(unittest.TestCase):
 

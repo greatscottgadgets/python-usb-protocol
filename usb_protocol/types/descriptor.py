@@ -159,15 +159,13 @@ class DescriptorField(construct.Subconstruct):
     def __rtruediv__(self, field_name):
         field_type = self._get_type_for_name(field_name)
 
+        if self.default is not None:
+            field_type = construct.Default(field_type, self.default)
+
         # Build our subconstruct. Construct makes this look super weird,
         # but this is actually "we have a field with <field_name> of type <field_type>".
         # In long form, we'll call it "description".
-        subconstruct = (field_name / field_type) * self.description
-
-        if self.default is not None:
-            return construct.Default(subconstruct, self.default)
-        else:
-            return subconstruct
+        return (field_name / field_type) * self.description
 
 
 # Convenience type that gets a descriptor's own length.

@@ -12,7 +12,15 @@ class ComplexDescriptorEmitter(ConstructEmitter):
     # Base classes should override this.
     DESCRIPTOR_FORMAT = None
 
-    def __init__(self):
+    def __init__(self, collection=None):
+        """
+        Parameters:
+            collection -- If this descriptor belongs to a collection, it should be
+                          provided here. Using a collection object allows e.g. automatic
+                          assignment of string descriptor indices.
+        """
+
+        self._collection = collection
 
         # Always create a basic ConstructEmitter from the given format.
         super().__init__(self.DESCRIPTOR_FORMAT)
@@ -49,6 +57,11 @@ class ComplexDescriptorEmitter(ConstructEmitter):
         self._subordinates.append(subordinate)
 
 
+    def _pre_emit(self):
+        """ Performs any manipulations needed on this object before emission. """
+        pass
+
+
     def emit(self, include_subordinates=True):
         """ Emit our descriptor.
 
@@ -56,9 +69,11 @@ class ComplexDescriptorEmitter(ConstructEmitter):
             include_subordinates -- If true or not provided, any subordinate descriptors will be included.
         """
 
-        result = bytearray()
+        # Run any pre-emit hook code before we perform our emission...
+        self._pre_emit()
 
-        # Add our basic descriptor...
+        # Start with our core descriptor...
+        result = bytearray()
         result.extend(super().emit())
 
         # ... and if descired, add our subordinates...
@@ -66,3 +81,5 @@ class ComplexDescriptorEmitter(ConstructEmitter):
             result.extend(sub)
 
         return bytes(result)
+
+

@@ -29,7 +29,7 @@ class StandardDescriptorNumbers(IntEnum):
 
 
 DeviceDescriptor = DescriptorFormat(
-    "bLength"             / DescriptorLength,
+    "bLength"             / construct.Const(0x12, construct.Int8ul),
     "bDescriptorType"     / DescriptorNumber(StandardDescriptorNumbers.DEVICE),
     "bcdUSB"              / DescriptorField("USB Version", default=2.0),
     "bDeviceClass"        / DescriptorField("Class",    default=0),
@@ -47,7 +47,7 @@ DeviceDescriptor = DescriptorFormat(
 
 
 ConfigurationDescriptor = DescriptorFormat(
-    "bLength"             / DescriptorLength,
+    "bLength"             / construct.Const(9, construct.Int8ul),
     "bDescriptorType"     / DescriptorNumber(StandardDescriptorNumbers.CONFIGURATION),
     "wTotalLength"        / DescriptorField("Length including subordinates"),
     "bNumInterfaces"      / DescriptorField("Interface count"),
@@ -101,7 +101,7 @@ EndpointDescriptor = DescriptorFormat(
 
 
 DeviceQualifierDescriptor = DescriptorFormat(
-    "bLength"             / DescriptorLength,
+    "bLength"             / construct.Const(9, construct.Int8ul),
     "bDescriptorType"     / DescriptorNumber(StandardDescriptorNumbers.DEVICE_QUALIFIER),
     "bcdUSB"              / DescriptorField("USB Version"),
     "bDeviceClass"        / DescriptorField("Class"),

@@ -230,9 +230,20 @@ class DeviceDescriptorCollection:
         self.add_descriptor(descriptor)
 
 
+    def get_descriptor_bytes(self, type_number: int, index: int = 0):
+        """ Returns the raw, binary descriptor for a given descriptor type/index.
+
+        Parmeters:
+            type_number -- The descriptor type number.
+            index       -- The index of the relevant descriptor, if relevant.
+        """
+        return self._descriptors[(type_number, index)]
+
+
     def __iter__(self):
         """ Allow iterating over each of our descriptors; yields (index, value, descriptor). """
         return ((number, index, desc) for ((number, index), desc) in self._descriptors.items())
+
 
 
 class EmitterTests(unittest.TestCase):

@@ -10,16 +10,18 @@ from contextlib import contextmanager
 from ..           import emitter_for_format
 from ..descriptor import ComplexDescriptorEmitter
 
+from ...types     import LanguageIDs
 from ...types.descriptors.standard import \
     DeviceDescriptor, StringDescriptor, EndpointDescriptor, DeviceQualifierDescriptor, \
-    ConfigurationDescriptor, InterfaceDescriptor, StandardDescriptorNumbers
+    ConfigurationDescriptor, InterfaceDescriptor, StandardDescriptorNumbers, StringLanguageDescriptor
 
 
 # Create our basic emitters...
-DeviceDescriptorEmitter    = emitter_for_format(DeviceDescriptor)
-StringDescriptorEmitter    = emitter_for_format(StringDescriptor)
-EndpointDescriptorEmitter  = emitter_for_format(EndpointDescriptor)
-DeviceQualifierDescriptor  = emitter_for_format(DeviceQualifierDescriptor)
+DeviceDescriptorEmitter         = emitter_for_format(DeviceDescriptor)
+StringDescriptorEmitter         = emitter_for_format(StringDescriptor)
+StringLanguageDescriptorEmitter = emitter_for_format(StringLanguageDescriptor)
+EndpointDescriptorEmitter       = emitter_for_format(EndpointDescriptor)
+DeviceQualifierDescriptor       = emitter_for_format(DeviceQualifierDescriptor)
 
 # ... convenience functions ...
 def get_string_descriptor(string):
@@ -112,7 +114,19 @@ class ConfigurationDescriptorEmitter(ComplexDescriptorEmitter):
 class DeviceDescriptorCollection:
     """ Object that builds a full collection of descriptors related to a given USB device. """
 
-    def __init__(self):
+    # Most systems seem happiest with en_US (ugh), so default to that.
+    DEFAULT_SUPPORTED_LANGUAGES = [LanguageIDs.ENGLISH_US]
+
+
+    def __init__(self, automatic_language_descriptor=True):
+        """
+        Parameters:
+            automatic_language_descriptor -- If set or not provided, a language descriptor will automatically
+                                             be added if none exists.
+        """
+
+
+        self._automatic_language_descriptor = automatic_language_descriptor
 
         # Create our internal descriptor tracker.
         # Keys are a tuple of (type, index).
@@ -183,6 +197,21 @@ class DeviceDescriptorCollection:
         self._descriptors[identifier] = descriptor
 
 
+    def add_language_descriptor(self, supported_languages=None):
+        """ Adds a language descriptor to the list of device descriptors.
+
+        Parameters:
+            supported_languages -- A list of languages supported by the device.
+        """
+
+        if supported_languages is None:
+            supported_languages = self.DEFAULT_SUPPORTED_LANGUAGES
+
+        descriptor = StringLanguageDescriptorEmitter()
+        descriptor.wLANGID = supported_languages
+        self.add_descriptor(descriptor)
+
+
     @contextmanager
     def DeviceDescriptor(self):
         """ Context manager that allows addition of a device descriptor.
@@ -230,6 +259,20 @@ class DeviceDescriptorCollection:
         self.add_descriptor(descriptor)
 
 
+    def _ensure_has_language_descriptor(self):
+        """ Ensures that we have a language descriptor; adding one if necessary."""
+
+        # If we're not automatically adding a language descriptor, we shouldn't do anything,
+        # and we'll just ignore this.
+        if not self._ensure_has_language_descriptor:
+            return
+
+        # If we don't have a language descriptor, add our default one.
+        if not (StandardDescriptorNumbers.STRING, 0) in self._descriptors:
+            self.add_language_descriptor()
+
+
+
     def get_descriptor_bytes(self, type_number: int, index: int = 0):
         """ Returns the raw, binary descriptor for a given descriptor type/index.
 
@@ -237,11 +280,17 @@ class DeviceDescriptorCollection:
             type_number -- The descriptor type number.
             index       -- The index of the relevant descriptor, if relevant.
         """
+
+        # If this is a request for a language descriptor, return one.
+        if (type_number, index) == (StandardDescriptorNumbers.STRING, 0):
+            self._ensure_has_language_descriptor()
+
         return self._descriptors[(type_number, index)]
 
 
     def __iter__(self):
         """ Allow iterating over each of our descriptors; yields (index, value, descriptor). """
+        self._ensure_has_language_descriptor()
         return ((number, index, desc) for ((number, index), desc) in self._descriptors.items())
 
 
@@ -337,17 +386,20 @@ class EmitterTests(unittest.TestCase):
 
         # We should wind up with four descriptor entries, as our endpoint/interface descriptors are
         # included in our configuration descriptor.
-        self.assertEqual(len(results), 4)
+        self.assertEqual(len(results), 5)
+
+        # Supported languages string.
+        self.assertIn((3, 0, b'\x04\x03\x09\x04'), results)
 
         # Manufacturer / product string.
         self.assertIn((3, 1, b'\x1a\x03T\x00e\x00s\x00t\x00 \x00C\x00o\x00m\x00p\x00a\x00n\x00y\x00'), results)
         self.assertIn((3, 2, b'\x1a\x03T\x00e\x00s\x00t\x00 \x00P\x00r\x00o\x00d\x00u\x00c\x00t\x00'), results)
 
         # Device descriptor.
-        self.assertIn((1, 0, b'\x0f\x01\x00\x02\x00\x00\x00@\xad\xde\xef\xbe\x00\x00\x01\x02\x00\x01'), results)
+        self.assertIn((1, 0, b'\x12\x01\x00\x02\x00\x00\x00@\xad\xde\xef\xbe\x00\x00\x01\x02\x00\x01'), results)
 
         # Configuration descriptor, with subordinates.
-        self.assertIn((2, 0, b'\r\x02 \x00\x01\x01\x00\x80\xfa\t\x04\x01\x00\x02\xff\xff\xff\x00\x07\x05\x81\x02@\x00\xff\x07\x05\x01\x02@\x00\xff'), results)
+        self.assertIn((2, 0, b'\t\x02 \x00\x01\x01\x00\x80\xfa\t\x04\x01\x00\x02\xff\xff\xff\x00\x07\x05\x81\x02@\x00\xff\x07\x05\x01\x02@\x00\xff'), results)
 
 if __name__ == "__main__":
     unittest.main()

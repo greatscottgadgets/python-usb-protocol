@@ -87,13 +87,13 @@ class BCDFieldAdapter(construct.Adapter):
 
     def _encode(self, obj, context, path):
 
-        # Ensure the data is parseable.
-        if (obj * 100) % 1:
-            raise AssertionError("BCD fields must be in the format XX.YY")
-
         # Break the object down into its component parts...
-        integer = int(obj)
-        percent = int((obj * 100) % 100)
+        integer = int(obj) % 100
+        percent = int(round(obj * 100)) % 100
+
+        # ... make sure nothing is lost during conversion...
+        if float(f"{integer:02}.{percent:02}") != obj:
+            raise AssertionError("BCD fields must be in the format XX.YY")
 
         # ... and squish them into an integer.
         return int(f"{integer:02}{percent:02}", 16)

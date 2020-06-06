@@ -264,7 +264,7 @@ class DeviceDescriptorCollection:
 
         # If we're not automatically adding a language descriptor, we shouldn't do anything,
         # and we'll just ignore this.
-        if not self._ensure_has_language_descriptor:
+        if not self._automatic_language_descriptor:
             return
 
         # If we don't have a language descriptor, add our default one.

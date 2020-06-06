@@ -401,5 +401,16 @@ class EmitterTests(unittest.TestCase):
         # Configuration descriptor, with subordinates.
         self.assertIn((2, 0, b'\t\x02 \x00\x01\x01\x00\x80\xfa\t\x04\x01\x00\x02\xff\xff\xff\x00\x07\x05\x81\x02@\x00\xff\x07\x05\x01\x02@\x00\xff'), results)
 
+
+    def test_empty_descriptor_collection(self):
+        collection = DeviceDescriptorCollection(automatic_language_descriptor=False)
+        results = list(collection)
+        self.assertEqual(len(results), 0)
+
+    def test_automatic_language_descriptor(self):
+        collection = DeviceDescriptorCollection(automatic_language_descriptor=True)
+        results = list(collection)
+        self.assertEqual(len(results), 1)
+
 if __name__ == "__main__":
     unittest.main()

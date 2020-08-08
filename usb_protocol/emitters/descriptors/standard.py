@@ -177,12 +177,14 @@ class DeviceDescriptorCollection:
         return index
 
 
-    def add_descriptor(self, descriptor, index=0):
+    def add_descriptor(self, descriptor, descriptor_type=None, index=0):
         """ Adds a descriptor to our collection.
 
         Parameters:
-            descriptor -- The descriptor to be added.
-            index      -- The index of the relevant descriptor. Defaults to 0.
+            descriptor      -- The descriptor to be added.
+            descriptor_type -- The type of the descriptor to be added. If `None`,
+                               this is automatically derived from the descriptor contents.
+            index           -- The index of the relevant descriptor. Defaults to 0.
         """
 
         # If this is an emitter rather than a descriptor itself, convert it.
@@ -190,7 +192,8 @@ class DeviceDescriptorCollection:
             descriptor = descriptor.emit()
 
         # Figure out the identifier (type + index) for this descriptor...
-        descriptor_type = descriptor[1]
+        if(descriptor_type == None):
+            descriptor_type = descriptor[1]
         identifier = descriptor_type, index
 
         # ... and store it.

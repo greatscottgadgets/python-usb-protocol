@@ -63,7 +63,7 @@ class HIDDescriptor(ComplexDescriptorEmitter):
             "null": null,
             "volatile": volatile,
         })
-        self.add_report(HIDPrefix.INPUT, ord(item_flags))
+        self.add_report_item(HIDPrefix.INPUT, ord(item_flags))
 
     def add_output_item(self,
                   data_constant = False,
@@ -87,7 +87,7 @@ class HIDDescriptor(ComplexDescriptorEmitter):
             "null": null,
             "volatile": volatile,
         })
-        self.add_report(HIDPrefix.OUTPUT, ord(item_flags))
+        self.add_report_item(HIDPrefix.OUTPUT, ord(item_flags))
 
     def __init__(self, parent_descriptor):
         super().__init__()

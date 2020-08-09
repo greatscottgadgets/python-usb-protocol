@@ -63,7 +63,7 @@ ReportDescriptor = DescriptorFormat(
     "bHeader" / construct.BitStruct(
         # prefix technically consists of a 4 byte tag and a 2 byte type,
         # however, they're all listed together in the HID spec
-        "prefix"  / construct.Enum(construct.BitsInteger(6), HIDPrefixes),
+        "prefix"  / construct.Enum(construct.BitsInteger(6), HIDPrefix),
         "bSize"   / construct.BitsInteger(2),
     ),
     "data"    / construct.Byte[lambda ctx: _hid_item_length[ctx.bHeader.bSize]]

@@ -15,6 +15,15 @@ _hid_item_length = [ 0, 1, 2, 4 ]
 class HIDDescriptor(ComplexDescriptorEmitter):
     DESCRIPTOR_FORMAT = HIDDescriptorType
 
+    def add_report_raw(self, report_data):
+        """Append raw report item or bytes to HID report
+
+        Arguments:
+        report_data -- bytes-like or ReportDescriptor to be appended to
+                       the HID report.
+        """
+        self._reports.append(hid_data)
+
     def add_report_item(self, report_prefix, *report_data):
         hid_report = ReportDescriptorEmitter()
         report_len = _hid_item_length.index(len(report_data))

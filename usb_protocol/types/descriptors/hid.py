@@ -15,7 +15,7 @@ from ..descriptor import \
     BCDFieldAdapter, DescriptorLength
 
 @unique
-class HIDPrefixes(IntEnum):
+class HIDPrefix(IntEnum):
     # Main items
     INPUT          = 0b1000_00
     OUTPUT         = 0b1001_00

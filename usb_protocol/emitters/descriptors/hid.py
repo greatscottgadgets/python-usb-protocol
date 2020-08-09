@@ -25,6 +25,13 @@ class HIDDescriptor(ComplexDescriptorEmitter):
         self._reports.append(hid_data)
 
     def add_report_item(self, report_prefix, *report_data):
+        """Convenience function to add formatted HID report item
+
+        Arguments:
+        report_prefix -- HIDPrefix enum representing report item type
+        *report_data  -- Additional bytes-like report item data.
+                         Valid lengths are 1, 2, or 4 bytes.
+        """
         hid_report = ReportDescriptorEmitter()
         report_len = _hid_item_length.index(len(report_data))
         hid_report.bHeader = {
@@ -43,6 +50,9 @@ class HIDDescriptor(ComplexDescriptorEmitter):
                   preferred = True,
                   null = False,
                   volatile = False):
+        """Convenience function to add HID input item with preformatted flags.
+           See HID 1.11 section 6.2.2.5 for flag meanings.
+        """
         item_flags = ItemFlags.build({
             "data_constant": data_constant,
             "array_variable": array_variable,
@@ -64,6 +74,9 @@ class HIDDescriptor(ComplexDescriptorEmitter):
                   preferred = True,
                   null = False,
                   volatile = False):
+        """Convenience function to add HID output item with preformatted flags.
+           See HID 1.11 section 6.2.2.5 for flag meanings.
+        """
         item_flags = ItemFlags.build({
             "data_constant": data_constant,
             "array_variable": array_variable,

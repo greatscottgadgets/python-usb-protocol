@@ -15,11 +15,11 @@ _hid_item_length = [ 0, 1, 2, 4 ]
 class HIDDescriptor(ComplexDescriptorEmitter):
     DESCRIPTOR_FORMAT = HIDDescriptorType
 
-    def add_report_item(self, report_enum, *report_data):
+    def add_report_item(self, report_prefix, *report_data):
         hid_report = ReportDescriptorEmitter()
         report_len = _hid_item_length.index(len(report_data))
         hid_report.bHeader = {
-            "prefix": report_enum,
+            "prefix": report_prefix,
             "bSize":  report_len
         }
         hid_report.data = report_data

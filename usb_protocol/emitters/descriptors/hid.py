@@ -22,7 +22,7 @@ class HIDDescriptor(ComplexDescriptorEmitter):
         report_data -- bytes-like or ReportDescriptor to be appended to
                        the HID report.
         """
-        self._reports.append(hid_data)
+        self._reports.append(report_data)
 
     def add_report_item(self, report_prefix, *report_data):
         """Convenience function to add formatted HID report item

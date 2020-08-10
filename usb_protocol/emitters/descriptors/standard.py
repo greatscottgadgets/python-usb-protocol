@@ -192,7 +192,7 @@ class DeviceDescriptorCollection:
             descriptor = descriptor.emit()
 
         # Figure out the identifier (type + index) for this descriptor...
-        if(descriptor_type == None):
+        if(descriptor_type is None):
             descriptor_type = descriptor[1]
         identifier = descriptor_type, index
 

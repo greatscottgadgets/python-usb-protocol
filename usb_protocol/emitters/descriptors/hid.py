@@ -106,4 +106,4 @@ class HIDDescriptor(ComplexDescriptorEmitter):
         report_descriptor = b"".join(report_descriptor)
         descriptor_len = len(report_descriptor)
         self.wDescriptorLength = descriptor_len
-        self._parent_descriptor.add_descriptor(report_descriptor, 0x22)
+        self._parent_descriptor.add_descriptor(report_descriptor, descriptor_type=0x22)

@@ -3,8 +3,9 @@
 #
 
 
-from . import ConstructEmitter
 from collections import defaultdict
+
+from . import ConstructEmitter
 
 class ComplexDescriptorEmitter(ConstructEmitter):
     """ Base class for emitting complex descriptors, which contain nested subordinates. """
@@ -28,7 +29,7 @@ class ComplexDescriptorEmitter(ConstructEmitter):
         # Store a list of subordinate descriptors, and a count of
         # subordinate descriptor types.
         self._subordinates = []
-        self._type_counts = {}
+        self._type_counts = defaultdict(int)
 
 
     def add_subordinate_descriptor(self, subordinate):
@@ -48,10 +49,7 @@ class ComplexDescriptorEmitter(ConstructEmitter):
         # Count this descriptor type...
         subordinate_type = subordinate[1]
 
-        try:
-            self._type_counts[subordinate_type] += 1
-        except KeyError:
-            self._type_counts[subordinate_type] = 1
+        self._type_counts[subordinate_type] += 1
 
         # ... and add the relevant bytes to our list of subordinates.
         self._subordinates.append(subordinate)

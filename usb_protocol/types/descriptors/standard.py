@@ -91,12 +91,21 @@ InterfaceDescriptor = DescriptorFormat(
 
 
 EndpointDescriptor = DescriptorFormat(
-    "bLength"             / construct.Const(7, construct.Int8ul),
+
+    # [USB2.0: 9.6; USB Audio Device Class Definition 1.0: 4.6.1.1, 4.6.2.1]
+    # Interfaces of the Audio 1.0 class extend their subordinate endpoint descriptors with
+    # 2 additional bytes (extending it from 7 to 9 bytes). Thankfully, this is the only extension that
+    # changes the length of a standard descriptor type, but we do have to handle this case in Construct.
+    "bLength"             / construct.OneOf(construct.Int8ul, [7, 9]),
     "bDescriptorType"     / DescriptorNumber(StandardDescriptorNumbers.ENDPOINT),
     "bEndpointAddress"    / DescriptorField("Endpoint Address"),
     "bmAttributes"        / DescriptorField("Attributes", default=2),
     "wMaxPacketSize"      / DescriptorField("Maximum Packet Size", default=64),
     "bInterval"           / DescriptorField("Polling interval", default=255),
+
+    # 2 bytes that are only present on endpoint descriptors for Audio 1.0 class interfaces.
+    ("bRefresh"           / construct.Optional(construct.Int8ul)) * "Refresh Rate",
+    ("bSynchAddress"      / construct.Optional(construct.Int8ul)) * "Synch Endpoint Address",
 )
 
 

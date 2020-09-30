@@ -7,6 +7,65 @@ import unittest
 import construct
 
 class DescriptorFormat(construct.Struct):
+    """
+    Creates a Construct structure for a USB descriptor, and a corresponding version that
+    supports parsing incomplete binary as `DescriptorType.Partial`, e.g. `DeviceDescriptor.Partial`.
+    """
+
+    def __init__(self, *subcons, _create_partial=True, **subconskw):
+
+        if _create_partial:
+            self.Partial = self._create_partial(*subcons, **subconskw) # pylint: disable=invalid-name
+
+        super().__init__(*subcons, **subconskw)
+
+
+    @classmethod
+    def _get_subcon_field_type(cls, subcon):
+        """ Gets the actual field type for a Subconstruct behind arbitrary levels of `Renamed`s."""
+
+        # DescriptorFields are usually `<Renamed <Renamed <FormatField>>>`.
+        # The type behind the `Renamed`s is the one we're interested in, so let's recursively examine
+        # the child Subconstruct until we get to it.
+
+        if not isinstance(subcon, construct.Renamed):
+            return subcon
+        else:
+            return cls._get_subcon_field_type(subcon.subcon)
+
+
+    @classmethod
+    def _create_partial(cls, *subcons, **subconskw):
+        """ Creates a version of the descriptor format for parsing incomplete binary data as a descriptor.
+
+        This essentially wraps every field after bLength and bDescriptorType in a `construct.Optional`.
+        """
+
+        def _apply_optional(subcon):
+
+            subcon_type = cls._get_subcon_field_type(subcon)
+
+            #
+            # If it's already Optional then we don't need to apply it again.
+            #
+            if isinstance(subcon_type, construct.Select):
+                # construct uses a weird singleton to define Pass. `construct.core.Pass` would normally be
+                # the type's name, but then they create a singleton of that same name, replacing that name and
+                # making the type technically unnamable and only accessable via `type()`.
+                if isinstance(subcon_type.subcons[1], type(construct.Pass)):
+                    return subcon
+
+            return (subcon.name / construct.Optional(subcon_type)) * subcon.docs
+
+        # First store the Subconstructs we don't want to modify: bLength and bDescriptorType,
+        # as these are never optional.
+        new_subcons = list(subcons[0:2])
+
+        # Then apply Optional to all of the rest of the Subconstructs.
+        new_subcons.extend([_apply_optional(subcon) for subcon in subcons[2:]])
+
+        return DescriptorFormat(*new_subcons, _create_partial=False, **subconskw)
+
 
     @staticmethod
     def _to_detail_dictionary(descriptor, use_pretty_names=True):

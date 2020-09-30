@@ -1,7 +1,12 @@
 #
 # This file is part of usb-protocol.
 #
-""" Structures describing standard USB descriptors. """
+"""
+Structures describing standard USB descriptors. Versions that support parsing incomplete binary data
+are available as `DescriptorType`.Partial, e.g. `DeviceDescriptor.Partial`, and are collectively available
+in the `usb_protocol.types.descriptors.partial.standard` module (which, like the structs in this module,
+can also be imported without `.standard`).
+"""
 
 import unittest
 from enum import IntEnum

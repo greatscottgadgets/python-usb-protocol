@@ -96,7 +96,7 @@ EndpointDescriptor = DescriptorFormat(
     # Interfaces of the Audio 1.0 class extend their subordinate endpoint descriptors with
     # 2 additional bytes (extending it from 7 to 9 bytes). Thankfully, this is the only extension that
     # changes the length of a standard descriptor type, but we do have to handle this case in Construct.
-    "bLength"             / construct.OneOf(construct.Int8ul, [7, 9]),
+    "bLength"             / construct.Default(construct.OneOf(construct.Int8ul, [7, 9]), 7),
     "bDescriptorType"     / DescriptorNumber(StandardDescriptorNumbers.ENDPOINT),
     "bEndpointAddress"    / DescriptorField("Endpoint Address"),
     "bmAttributes"        / DescriptorField("Attributes", default=2),

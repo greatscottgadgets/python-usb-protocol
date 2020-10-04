@@ -16,8 +16,8 @@ class LinkCommand(IntEnum):
     LAU   = 5   # Power State Acceptance
     LXU   = 6   # Power State Rejection
     LPMA  = 7   # Power State Acknowledgement
-    LDN   = 8   # Downstream-facing Keep-alive
-    LUP   = 11  # Upstream-facing Keep-alive
+    LUP   = 8   # Downstream-facing Keep-alive
+    LDN   = 11  # Upstream-facing Keep-alive
 
     def get_class(self):
         return int(self) >> 2

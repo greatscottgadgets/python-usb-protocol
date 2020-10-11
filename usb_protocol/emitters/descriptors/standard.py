@@ -13,15 +13,19 @@ from ..descriptor import ComplexDescriptorEmitter
 from ...types     import LanguageIDs
 from ...types.descriptors.standard import \
     DeviceDescriptor, StringDescriptor, EndpointDescriptor, DeviceQualifierDescriptor, \
-    ConfigurationDescriptor, InterfaceDescriptor, StandardDescriptorNumbers, StringLanguageDescriptor
+    ConfigurationDescriptor, InterfaceDescriptor, StandardDescriptorNumbers, StringLanguageDescriptor, \
+    BinaryObjectStoreDescriptor, SuperSpeedEndpointCompanionDescriptor
 
 
 # Create our basic emitters...
 DeviceDescriptorEmitter         = emitter_for_format(DeviceDescriptor)
 StringDescriptorEmitter         = emitter_for_format(StringDescriptor)
 StringLanguageDescriptorEmitter = emitter_for_format(StringLanguageDescriptor)
-EndpointDescriptorEmitter       = emitter_for_format(EndpointDescriptor)
 DeviceQualifierDescriptor       = emitter_for_format(DeviceQualifierDescriptor)
+
+# ... our basic superspeed emitters ...
+BinaryObjectStoreDescriptorEmitter           = emitter_for_format(BinaryObjectStoreDescriptor)
+SuperSpeedEndpointCompanionDescriptorEmitter = emitter_for_format(SuperSpeedEndpointCompanionDescriptor)
 
 # ... convenience functions ...
 def get_string_descriptor(string):
@@ -33,13 +37,37 @@ def get_string_descriptor(string):
 
 # ... and complex emitters.
 
+class EndpointDescriptorEmitter(ComplexDescriptorEmitter):
+    """ Emitter that creates an InterfaceDescriptor. """
+
+    DESCRIPTOR_FORMAT = EndpointDescriptor
+
+    @contextmanager
+    def SuperSpeedCompanion(self):
+        """ Context manager that allows addition of a SuperSpeed Companion to this endpoint descriptor.
+
+        It can be used with a `with` statement; and yields an SuperSpeedEndpointCompanionDescriptorEmitter
+        that can be populated:
+
+            with endpoint.SuperSpeedEndpointCompanion() as d:
+                d.bMaxBurst = 1
+
+        This adds the relevant descriptor, automatically.
+        """
+
+        descriptor = SuperSpeedEndpointCompanionDescriptorEmitter()
+        yield descriptor
+
+        self.add_subordinate_descriptor(descriptor)
+
+
 class InterfaceDescriptorEmitter(ComplexDescriptorEmitter):
     """ Emitter that creates an InterfaceDescriptor. """
 
     DESCRIPTOR_FORMAT = InterfaceDescriptor
 
     @contextmanager
-    def EndpointDescriptor(self):
+    def EndpointDescriptor(self, *, add_default_superspeed=False):
         """ Context manager that allows addition of a subordinate endpoint descriptor.
 
         It can be used with a `with` statement; and yields an EndpointDesriptorEmitter
@@ -56,6 +84,11 @@ class InterfaceDescriptorEmitter(ComplexDescriptorEmitter):
 
         descriptor = EndpointDescriptorEmitter()
         yield descriptor
+
+        # If we're adding a default SuperSpeed extension, do so.
+        if add_default_superspeed:
+            with descriptor.SuperSpeedCompanion():
+                pass
 
         self.add_subordinate_descriptor(descriptor)
 
@@ -260,15 +293,15 @@ class DeviceDescriptorCollection:
 
 
     def _ensure_has_language_descriptor(self):
-        """ Ensures that we have a language descriptor; adding one if necessary."""
+        """ ensures that we have a language descriptor; adding one if necessary."""
 
-        # If we're not automatically adding a language descriptor, we shouldn't do anything,
+        # if we're not automatically adding a language descriptor, we shouldn't do anything,
         # and we'll just ignore this.
         if not self._automatic_language_descriptor:
             return
 
-        # If we don't have a language descriptor, add our default one.
-        if not (StandardDescriptorNumbers.STRING, 0) in self._descriptors:
+        # if we don't have a language descriptor, add our default one.
+        if (StandardDescriptorNumbers.STRING, 0) not in self._descriptors:
             self.add_language_descriptor()
 
 
@@ -293,6 +326,63 @@ class DeviceDescriptorCollection:
         self._ensure_has_language_descriptor()
         return ((number, index, desc) for ((number, index), desc) in self._descriptors.items())
 
+
+class SuperSpeedDeviceDescriptorCollection(DeviceDescriptorCollection):
+    """ Object that builds a full collection of descriptors related to a given USB3 device. """
+
+    def __init__(self, automatic_descriptors=True):
+        """
+        Parameters:
+            automatic_descriptors -- If set or not provided, certian required descriptors will be
+                                     be added if none exists.
+        """
+        self._automatic_descriptors = automatic_descriptors
+        super().__init__(automatic_language_descriptor=automatic_descriptors)
+
+
+    @contextmanager
+    def BOSDescriptor(self):
+        """ Context manager that allows addition of a Binary Object Store descriptor.
+
+        It can be used with a `with` statement; and yields an BinaryObjectStoreDescriptorEmitter
+        that can be populated:
+
+            with collection.BOSDescriptor() as d:
+                [snip]
+
+        This adds the relevant descriptor, automatically. Note that populating derived
+        fields such as bNumDeviceCaps aren't necessary; they'll be populated automatically.
+        """
+        descriptor = BinaryObjectStoreDescriptorEmitter()
+        yield descriptor
+
+        self.add_descriptor(descriptor)
+
+
+    def add_default_bos_descriptor(self):
+        """ Adds a default, empty BOS descriptor. """
+
+        descriptor = BinaryObjectStoreDescriptorEmitter()
+        self.add_descriptor(descriptor)
+
+
+    def _ensure_has_bos_descriptor(self):
+        """ Ensures that we have a BOS descriptor; adding one if necessary."""
+
+        # If we're not automatically adding a language descriptor, we shouldn't do anything,
+        # and we'll just ignore this.
+        if not self._automatic_descriptors:
+            return
+
+        # If we don't have a language descriptor, add our default one.
+        if (StandardDescriptorNumbers.BOS, 0) not in self._descriptors:
+            self.add_default_bos_descriptor()
+
+
+    def __iter__(self):
+        """ Allow iterating over each of our descriptors; yields (index, value, descriptor). """
+        self._ensure_has_bos_descriptor()
+        return super().__iter__()
 
 
 class EmitterTests(unittest.TestCase):
@@ -414,3 +504,5 @@ class EmitterTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+

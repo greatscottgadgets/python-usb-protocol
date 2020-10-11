@@ -593,20 +593,6 @@ class USBUsageType(IntEnum):
     IMPLICIT_FEEDBACK = 2
 
 
-class USBStandardRequests(IntEnum):
-    GET_STATUS        = 0
-    CLEAR_FEATURE     = 1
-    SET_FEATURE       = 3
-    SET_ADDRESS       = 5
-    GET_DESCRIPTOR    = 6
-    SET_DESCRIPTOR    = 7
-    GET_CONFIGURATION = 8
-    SET_CONFIGURATION = 9
-    GET_INTERFACE     = 10
-    SET_INTERFACE     = 11
-    SYNCH_FRAME       = 12
-
-
 class USBTransferType(IntEnum):
     CONTROL     = 0
     ISOCHRONOUS = 1
@@ -639,3 +625,21 @@ class USBStandardRequests(IntEnum):
     GET_INTERFACE     = 10
     SET_INTERFACE     = 11
     SYNCH_FRAME       = 12
+
+    # USB3 only.
+    SET_ENCRYPTION       = 13
+    GET_ENCRYPTION       = 14
+    SET_HANDSHAKE        = 15
+    GET_HANDSHAKE        = 16
+    SET_CONNECTION       = 17
+    SET_SECURITY_DATA    = 18
+    GET_SECURITY_DATA    = 19
+    SET_WUSB_DATA        = 20
+    LOOPBACK_DATA_WRITE  = 21
+    LOOPBACK_DATA_READ   = 22
+    SET_INTERFACE_DS     = 23
+    SET_SEL              = 48
+    SET_ISOCH_DELAY      = 49
+
+
+

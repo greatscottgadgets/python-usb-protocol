@@ -4,4 +4,4 @@
 """ USB-related emitters. """
 
 from .construct            import emitter_for_format, ConstructEmitter
-from .descriptors.standard import DeviceDescriptorCollection
+from .descriptors.standard import DeviceDescriptorCollection, SuperSpeedDeviceDescriptorCollection

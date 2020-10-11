@@ -18,14 +18,25 @@ from ..descriptor import \
 class StandardDescriptorNumbers(IntEnum):
     """ Numbers of our standard descriptors. """
 
-    DEVICE                 = 1
-    CONFIGURATION          = 2
-    STRING                 = 3
-    INTERFACE              = 4
-    ENDPOINT               = 5
-    DEVICE_QUALIFIER       = 6
-    OTHER_SPEED_DESCRIPTOR = 7
-    INTERFACE_POWER        = 8
+    DEVICE                                        =  1
+    CONFIGURATION                                 =  2
+    STRING                                        =  3
+    INTERFACE                                     =  4
+    ENDPOINT                                      =  5
+    DEVICE_QUALIFIER                              =  6
+    OTHER_SPEED_DESCRIPTOR                        =  7
+    OTHER_SPEED                                   =  7
+    INTERFACE_POWER                               =  8
+    OTG                                           =  9
+    DEBUG                                         = 10
+    INTERFACE_ASSOCIATION                         = 11
+
+    # SuperSpeed only
+    BOS                                           = 15
+    DEVICE_CAPABILITY                             = 16
+    SUPERSPEED_USB_ENDPOINT_COMPANION             = 48
+    SUPERSPEEDPLUS_ISOCHRONOUS_ENDPOINT_COMPANION = 49
+
 
 
 DeviceDescriptor = DescriptorFormat(
@@ -44,6 +55,7 @@ DeviceDescriptor = DescriptorFormat(
     "iSerialNumber"       / DescriptorField("Serial Number", default=0),
     "bNumConfigurations"  / DescriptorField("Configuration Count"),
 )
+
 
 
 ConfigurationDescriptor = DescriptorFormat(
@@ -120,6 +132,26 @@ DeviceQualifierDescriptor = DescriptorFormat(
     "bNumConfigurations"  / DescriptorField("Configuration Count"),
     "_bReserved"          / construct.Optional(construct.Const(b"\0"))
 )
+
+
+#
+# SuperSpeed descriptors
+#
+BinaryObjectStoreDescriptor = DescriptorFormat(
+    "bLength"             / construct.Const(0x5, construct.Int8ul),
+    "bDescriptorType"     / DescriptorNumber(StandardDescriptorNumbers.BOS),
+    "wTotalLength"        / DescriptorField("Total Length", default=5),
+    "bNumDeviceCaps"      / DescriptorField("Device Capability Descriptors", default=0),
+)
+
+SuperSpeedEndpointCompanionDescriptor = DescriptorFormat(
+    "bLength"             / construct.Const(0x6, construct.Int8ul),
+    "bDescriptorType"     / DescriptorNumber(StandardDescriptorNumbers.SUPERSPEED_USB_ENDPOINT_COMPANION),
+    "bMaxBurst"           / DescriptorField("Maximum Burst Length", default=0),
+    "bmAttributes"        / DescriptorField("Extended Attributes", default=0),
+    "wBytesPerInterval"   / DescriptorField("Bytes Per Service Interval", default=0),
+)
+
 
 
 class DescriptorParserCases(unittest.TestCase):

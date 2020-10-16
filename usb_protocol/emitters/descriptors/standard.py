@@ -11,10 +11,7 @@ from ..           import emitter_for_format
 from ..descriptor import ComplexDescriptorEmitter
 
 from ...types     import LanguageIDs
-from ...types.descriptors.standard import \
-    DeviceDescriptor, StringDescriptor, EndpointDescriptor, DeviceQualifierDescriptor, \
-    ConfigurationDescriptor, InterfaceDescriptor, StandardDescriptorNumbers, StringLanguageDescriptor, \
-    BinaryObjectStoreDescriptor, SuperSpeedEndpointCompanionDescriptor
+from ...types.descriptors.standard import *
 
 
 # Create our basic emitters...
@@ -24,8 +21,9 @@ StringLanguageDescriptorEmitter = emitter_for_format(StringLanguageDescriptor)
 DeviceQualifierDescriptor       = emitter_for_format(DeviceQualifierDescriptor)
 
 # ... our basic superspeed emitters ...
-BinaryObjectStoreDescriptorEmitter           = emitter_for_format(BinaryObjectStoreDescriptor)
-SuperSpeedEndpointCompanionDescriptorEmitter = emitter_for_format(SuperSpeedEndpointCompanionDescriptor)
+USB2ExtensionDescriptorEmitter                  = emitter_for_format(USB2ExtensionDescriptor)
+SuperSpeedUSBDeviceCapabilityDescriptorEmitter  = emitter_for_format(SuperSpeedUSBDeviceCapabilityDescriptor)
+SuperSpeedEndpointCompanionDescriptorEmitter    = emitter_for_format(SuperSpeedEndpointCompanionDescriptor)
 
 # ... convenience functions ...
 def get_string_descriptor(string):
@@ -327,6 +325,63 @@ class DeviceDescriptorCollection:
         return ((number, index, desc) for ((number, index), desc) in self._descriptors.items())
 
 
+
+
+class BinaryObjectStoreDescriptorEmitter(ComplexDescriptorEmitter):
+    """ Emitter that creates a BinaryObjectStore descriptor. """
+
+    DESCRIPTOR_FORMAT = BinaryObjectStoreDescriptor
+
+    @contextmanager
+    def USB2Extension(self):
+        """ Context manager that allows addition of a USB 2.0 Extension to this Binary Object Store.
+
+        It can be used with a `with` statement; and yields an USB2ExtensionDescriptorEmitter
+        that can be populated:
+
+            with bos.USB2Extension() as e:
+                e.bmAttributes = 1
+
+        This adds the relevant descriptor, automatically.
+        """
+
+        descriptor = USB2ExtensionDescriptorEmitter()
+        yield descriptor
+
+        self.add_subordinate_descriptor(descriptor)
+
+
+    @contextmanager
+    def SuperSpeedUSBDeviceCapability(self):
+        """ Context manager that allows addition of a SS Device Capability to this Binary Object Store.
+
+        It can be used with a `with` statement; and yields an SuperSpeedUSBDeviceCapabilityDescriptorEmitter
+        that can be populated:
+
+            with bos.SuperSpeedUSBDeviceCapability() as e:
+                e.wSpeedSupported       = 0b1110
+                e.bFunctionalitySupport = 1
+
+        This adds the relevant descriptor, automatically.
+        """
+
+        descriptor = SuperSpeedUSBDeviceCapabilityDescriptorEmitter()
+        yield descriptor
+
+        self.add_subordinate_descriptor(descriptor)
+
+
+    def _pre_emit(self):
+
+        # Figure out the total length of our descriptor, including subordinates.
+        subordinate_length = sum(len(sub) for sub in self._subordinates)
+        self.wTotalLength = subordinate_length + self.DESCRIPTOR_FORMAT.sizeof()
+
+        # Count our subordinate descriptors, and update our internal count.
+        self.bNumDeviceCaps = len(self._subordinates)
+
+
+
 class SuperSpeedDeviceDescriptorCollection(DeviceDescriptorCollection):
     """ Object that builds a full collection of descriptors related to a given USB3 device. """
 
@@ -362,7 +417,14 @@ class SuperSpeedDeviceDescriptorCollection(DeviceDescriptorCollection):
     def add_default_bos_descriptor(self):
         """ Adds a default, empty BOS descriptor. """
 
+        # Create an empty BOS descriptor...
         descriptor = BinaryObjectStoreDescriptorEmitter()
+
+        # ... populate our default required descriptors...
+        descriptor.add_subordinate_descriptor(USB2ExtensionDescriptorEmitter())
+        descriptor.add_subordinate_descriptor(SuperSpeedUSBDeviceCapabilityDescriptorEmitter())
+
+        # ... and add it to our overall BOS descriptor.
         self.add_descriptor(descriptor)
 
 

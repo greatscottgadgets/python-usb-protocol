@@ -180,6 +180,16 @@ class DescriptorField(construct.Subconstruct):
         'w'   : construct.Int16ul,
     }
 
+
+    LENGTH_TYPES = {
+        1: construct.Int8ul,
+        2: construct.Int16ul,
+        3: construct.Int24ul,
+        4: construct.Int32ul,
+        8: construct.Int64ul
+    }
+
+
     @staticmethod
     def _get_prefix(name):
         """ Returns the lower-case prefix on a USB descriptor name. """
@@ -210,13 +220,20 @@ class DescriptorField(construct.Subconstruct):
             raise ValueError("field names must be formatted per the USB standard!")
 
 
-    def __init__(self, description="", default=None):
+    def __init__(self, description="", default=None, *, length=None):
         self.description = description
         self.default = default
+        self.length = length
 
 
     def __rtruediv__(self, field_name):
-        field_type = self._get_type_for_name(field_name)
+        # If we have a length, use it to figure out the type.
+        # Otherwise, extract the type from the prefix. (Using a length
+        # is useful for e.g. USB3 bitfields; which can span several bytes.)
+        if self.length is not None:
+            field_type = self.LENGTH_TYPES[self.length]
+        else:
+            field_type = self._get_type_for_name(field_name)
 
         if self.default is not None:
             field_type = construct.Default(field_type, self.default)

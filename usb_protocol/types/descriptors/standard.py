@@ -43,6 +43,27 @@ class StandardDescriptorNumbers(IntEnum):
     SUPERSPEEDPLUS_ISOCHRONOUS_ENDPOINT_COMPANION = 49
 
 
+class DeviceCapabilityTypes(IntEnum):
+    """ Numbers for the SuperSpeed standard Device Capabilities. """
+
+    WIRELESS_USB                =  1
+    USB_2_EXTENSION             =  2
+    SUPERSPEED_USB              =  3
+    CONTAINER_ID                =  4
+    PLATFORM                    =  5
+    POWER_DELIVERY_CAPABILITY   =  6
+    BATTERY_INFO_CAPABILITY     =  7
+    PD_CONSUMER_PORT_CAPABILITY =  8
+    PD_PROVIDER_PORT_CAPABILITY =  9
+    SUPERSPEED_PLUS             = 10
+    PRECISION_TIME_MEASUREMENT  = 11
+    WIRELESS_USB_EXTENSION      = 12
+    BILLBOARD                   = 13
+    AUTHENTICATION              = 14
+    BILLBOARD_EXTENSION         = 15
+    CONFIGURATION_SUMMARY       = 16
+
+
 
 DeviceDescriptor = DescriptorFormat(
     "bLength"             / construct.Const(0x12, construct.Int8ul),
@@ -143,11 +164,30 @@ DeviceQualifierDescriptor = DescriptorFormat(
 # SuperSpeed descriptors
 #
 BinaryObjectStoreDescriptor = DescriptorFormat(
-    "bLength"             / construct.Const(0x5, construct.Int8ul),
-    "bDescriptorType"     / DescriptorNumber(StandardDescriptorNumbers.BOS),
-    "wTotalLength"        / DescriptorField("Total Length", default=5),
-    "bNumDeviceCaps"      / DescriptorField("Device Capability Descriptors", default=0),
+    "bLength"               / construct.Const(0x5, construct.Int8ul),
+    "bDescriptorType"       / DescriptorNumber(StandardDescriptorNumbers.BOS),
+    "wTotalLength"          / DescriptorField("Total Length", default=5),
+    "bNumDeviceCaps"        / DescriptorField("Device Capability Descriptors", default=0),
 )
+
+USB2ExtensionDescriptor = DescriptorFormat(
+    "bLength"               / construct.Const(0x7, construct.Int8ul),
+    "bDescriptorType"       / DescriptorNumber(StandardDescriptorNumbers.DEVICE_CAPABILITY),
+    "bDevCapabilityType"    / construct.Const(DeviceCapabilityTypes.USB_2_EXTENSION, construct.Int8ul),
+    "bmAttributes"          / DescriptorField("Attributes", default=0b10, length=4)
+)
+
+SuperSpeedUSBDeviceCapabilityDescriptor = DescriptorFormat(
+    "bLength"               / construct.Const(0xA, construct.Int8ul),
+    "bDescriptorType"       / DescriptorNumber(StandardDescriptorNumbers.DEVICE_CAPABILITY),
+    "bDevCapabilityType"    / construct.Const(DeviceCapabilityTypes.SUPERSPEED_USB, construct.Int8ul),
+    "bmAttributes"          / DescriptorField("Attributes", default=0),
+    "wSpeedsSupported"      / DescriptorField("USB3 Speeds Supported", default=0b1000),
+    "bFunctionalitySupport" / DescriptorField("Lowest Speed with Full Support", default=3),
+    "bU1DevExitLat"         / DescriptorField("U1 Exit Latency", default=0),
+    "wU2DevExitLat"         / DescriptorField("U2 Exit Latency", default=0)
+)
+
 
 SuperSpeedEndpointCompanionDescriptor = DescriptorFormat(
     "bLength"             / construct.Const(0x6, construct.Int8ul),

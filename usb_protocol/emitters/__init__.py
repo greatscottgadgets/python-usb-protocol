@@ -3,5 +3,5 @@
 #
 """ USB-related emitters. """
 
-from .construct            import emitter_for_format, ConstructEmitter
+from .construct_interop    import emitter_for_format, ConstructEmitter
 from .descriptors.standard import DeviceDescriptorCollection, SuperSpeedDeviceDescriptorCollection

@@ -3,17 +3,14 @@
 #
 """ common USB audio enums and descriptors """
 
-from build.lib.usb_protocol.emitters import descriptor
-import unittest
+from usb_protocol.types import USBSynchronizationType, USBUsageType
 from enum import IntEnum
 
 import construct
-from   construct  import this, Default
 
-from .. import LanguageIDs
+from .. import USBTransferType
 from ..descriptor import \
-    DescriptorField, DescriptorNumber, DescriptorFormat, \
-    BCDFieldAdapter, DescriptorLength
+    DescriptorField, DescriptorNumber, DescriptorFormat
 
 class AudioInterfaceClassCode(IntEnum):
     AUDIO = 0x01
@@ -396,7 +393,7 @@ class EmbeddedFunctionTerminalTypes(IntEnum):
 AudioControlInterruptEndpointDescriptor = DescriptorFormat(
     "bLength"             / construct.Const(7, construct.Int8ul),
     "bDescriptorType"     / DescriptorNumber(AudioClassSpecificDescriptorTypes.CS_ENDPOINT),
-    "bEndpointAddress"    / DescriptorField(description="The address of the endpoint: D7: Direction (1 = IN); D6..4: Reserved; D3..0: endpoint number"),
+    "bEndpointAddress"    / DescriptorField(description="The address of the endpoint, use USBDirection.*.from_endpoint_address()"),
     "bmAttributes"        / DescriptorField(description="D1..0: Transfer type (0b11 = Interrupt)", default=0b11),
     "wMaxPacketSize"      / DescriptorField(description="Maximum packet size this endpoint is capable of. Used here to pass 6-byte interrupt information.", default=6),
     "bInterval"           / DescriptorField(description="Interval for polling the Interrupt endpoint")
@@ -405,7 +402,7 @@ AudioControlInterruptEndpointDescriptor = DescriptorFormat(
 AudioStreamingIsochronousEndpointDescriptor = DescriptorFormat(
     "bLength"             / construct.Const(7, construct.Int8ul),
     "bDescriptorType"     / DescriptorNumber(DescriptorTypes.ENDPOINT),
-    "bEndpointAddress"    / DescriptorField(description="The address of the endpoint: D3..0: endpoint number; D6..4: Reserved; D7: direction (0=OUT / 1=IN)"),
+    "bEndpointAddress"    / DescriptorField(description="The address of the endpoint, use USBDirection.*.from_endpoint_address()"),
     "bmAttributes"        / DescriptorField(description="D1..0: transfer type (01=isochronous); D3..2: synchronization type (01=asynchronous/10=adaptive/11=synchronous); D5..4: usage (00=data/10=feedback)", default=0b000101),
     "wMaxPacketSize"      / DescriptorField(description="Maximum packet size this endpoint is capable of. Used here to pass 6-byte interrupt information.", default=6),
     "bInterval"           / DescriptorField(description="Interval for polling the Interrupt endpoint")
@@ -414,8 +411,117 @@ AudioStreamingIsochronousEndpointDescriptor = DescriptorFormat(
 AudioStreamingIsochronousFeedbackEndpointDescriptor = DescriptorFormat(
     "bLength"             / construct.Const(7, construct.Int8ul),
     "bDescriptorType"     / DescriptorNumber(DescriptorTypes.ENDPOINT),
-    "bEndpointAddress"    / DescriptorField(description="The address of the endpoint: D3..0: endpoint number; D6..4: Reserved; D7: direction (0=OUT / 1=IN)"),
+    "bEndpointAddress"    / DescriptorField(description="The address of the endpoint, use USBDirection.*.from_endpoint_address()"),
     "bmAttributes"        / DescriptorField(description="D1..0: transfer type (01=isochronous); D3..2: synchronization type (00=no sync); D5..4: usage (10=feedback)", default=0b00100001),
     "wMaxPacketSize"      / DescriptorField(description="Maximum packet size this endpoint is capable of. Used here to pass 6-byte interrupt information.", default=6),
     "bInterval"           / DescriptorField(description="Interval for polling the Interrupt endpoint")
+)
+
+###################### MIDI #########################
+class MidiStreamingInterfaceDescriptorTypes(IntEnum):
+    CS_UNDEFINED     = 0x20
+    CS_DEVICE        = 0x21
+    CS_CONFIGURATION = 0x22
+    CS_STRING        = 0x23
+    CS_INTERFACE     = 0x24
+    CS_ENDPOINT      = 0x25
+    CS_GR_TRM_BLOCK  = 0x26
+
+class MidiStreamingInterfaceDescriptorSubtypes(IntEnum):
+    MS_DESCRIPTOR_UNDEFINED = 0x00
+    MS_HEADER               = 0x01
+    MIDI_IN_JACK            = 0x02
+    MIDI_OUT_JACK           = 0x03
+    ELEMENT                 = 0x04
+
+class MidiStreamingEndpointDescriptorSubtypes(IntEnum):
+    DESCRIPTOR_UNDEFINED = 0x00
+    MS_GENERAL           = 0x01
+    MS_GENERAL_2_0       = 0x02
+
+class MidiStreamingInterfaceHeaderClassRevision(IntEnum):
+    MS_MIDI_1_0 = 0x0100
+    MS_MIDI_2_0 = 0x0200
+
+class MidiStreamingJackTypes(IntEnum):
+    JACK_TYPE_UNDEFINED = 0x00
+    EMBEDDED            = 0x01
+    EXTERNAL            = 0x02
+
+StandardMidiStreamingInterfaceDescriptor = DescriptorFormat(
+    "bLength"             / construct.Const(9, construct.Int8ul),
+    "bDescriptorType"     / DescriptorNumber(DescriptorTypes.INTERFACE),
+    "bInterfaceNumber"    / DescriptorField(description="ID of the streaming interface"),
+    "bAlternateSetting"   / DescriptorField(description="alternate setting number for the interface", default=0),
+    "bNumEndpoints"       / DescriptorField(description="Number of data endpoints used (excluding endpoint 0). Can be: 0 (no data endpoint); 1 (data endpoint); 2 (data + explicit feedback endpoint)", default=0),
+    "bInterfaceClass"     / DescriptorNumber(AudioInterfaceClassCode.AUDIO),
+    "bInterfaceSubClass"  / DescriptorNumber(AudioInterfaceSubclassCodes.MIDI_STREAMING),
+    "bInterfaceProtocol"  / DescriptorNumber(0),
+    "iInterface"          / DescriptorField(description="index of a string descriptor describing this interface (0 = unused)", default=0)
+)
+
+ClassSpecificMidiStreamingInterfaceHeaderDescriptor = DescriptorFormat(
+    "bLength"             / construct.Const(7, construct.Int8ul),
+    "bDescriptorType"     / DescriptorNumber(AudioClassSpecificDescriptorTypes.CS_INTERFACE),
+    "bDescriptorSubtype"  / DescriptorNumber(AudioClassSpecificACInterfaceDescriptorSubtypes.HEADER),
+    "bcdADC"              / DescriptorField(description="Midi Streaming Class specification release version", default=1.0),
+    "wTotalLength"        / DescriptorField(description="Total number of bytes of the class-specific MIDIStreaming interface descriptor. Includes the combined length of this descriptor header and all Jack and Element descriptors."),
+)
+
+StandardMidiStreamingDataEndpointDescriptor = DescriptorFormat(
+    "bLength"             / construct.Const(7, construct.Int8ul),
+    "bDescriptorType"     / DescriptorNumber(AudioClassSpecificDescriptorTypes.CS_ENDPOINT),
+    "bEndpointAddress"    / DescriptorField(description="endpoint address, use USBDirection.*.from_endpoint_address()"),
+    "bmAttributes"        / DescriptorField(description="endpoint type, see USBTransferType (only NONE, BULK or INTERRUPT allowed)", default=USBTransferType.BULK),
+    "wMaxPacketSize"      / DescriptorField(description="Maximum packet size this endpoint is capable of sending or receiving"),
+    "bInterval"           / DescriptorField(description="Interval for polling endpoint for Interrupt data transfers. For bulk endpoints this field is ignored and must be reset to 0", default=0)
+)
+
+MidiInJackDescriptor = DescriptorFormat(
+    "bLength"             / construct.Const(6, construct.Int8ul),
+    "bDescriptorType"     / DescriptorNumber(AudioClassSpecificDescriptorTypes.CS_INTERFACE),
+    "bDescriptorSubtype"  / DescriptorNumber(MidiStreamingInterfaceDescriptorSubtypes.MIDI_IN_JACK),
+    "bJackType"           / DescriptorField(description="see MidiStreamingJackTypes"),
+    "bJackID"             / DescriptorField(description="Constant uniquely identifying the MIDI IN Jack within the USB-MIDI function"),
+    "iJack"               / DescriptorField(description="index of a string descriptor describing this jack (0 = unused)", default=0)
+)
+
+MidiOutJackDescriptorHead = DescriptorFormat(
+    "bLength"             / DescriptorField(description="Size of this descriptor, in bytes: 6+2*p"),
+    "bDescriptorType"     / DescriptorNumber(AudioClassSpecificDescriptorTypes.CS_INTERFACE),
+    "bDescriptorSubtype"  / DescriptorNumber(MidiStreamingInterfaceDescriptorSubtypes.MIDI_OUT_JACK),
+    "bJackType"           / DescriptorField(description="see MidiStreamingJackTypes"),
+    "bJackID"             / DescriptorField(description="Constant uniquely identifying the MIDI IN Jack within the USB-MIDI function"),
+    "bNrInputPins"        / DescriptorField(description="Number of Input Pins of this MIDI OUT Jack: p", default=1)
+)
+
+MidiOutJackDescriptorElement = DescriptorFormat(
+    "baSourceID"          / construct.Int8ul, # ID of the Entity to which the first Input Pin of this MIDI OUT Jack is connected
+    "BaSourcePin"         / construct.Int8ul, #Output Pin number of the Entity to which the first Input Pin of this MIDI OUT Jack is connected
+)
+
+MidiOutJackDescriptorFoot = DescriptorFormat(
+    "iJack"               / DescriptorField(description="index of a string descriptor describing this jack (0 = unused)", default=0)
+)
+
+StandardMidiStreamingBulkDataEndpointDescriptor = DescriptorFormat(
+    "bLength"             / construct.Const(9, construct.Int8ul),
+    "bDescriptorType"     / DescriptorNumber(DescriptorTypes.ENDPOINT),
+    "bEndpointAddress"    / DescriptorField(description="The address of the endpoint, use USBDirection.*.from_endpoint_address()"),
+    "bmAttributes"        / DescriptorField(description="D1..0: transfer type (10=bulk), D3..2: synchronization type (00=no sync);", default=USBTransferType.BULK | USBSynchronizationType.NONE | USBUsageType.DATA),
+    "wMaxPacketSize"      / DescriptorField(description="Maximum packet size this endpoint is capable of", default=512),
+    "bInterval"           / DescriptorField(description="Interval for polling endpoint for data transfers expressed in milliseconds. This field is ignored for bulk endpoints. Must be set to 0", default=0),
+    "bRefresh"            / DescriptorField(description="must be set to 0", default=0),
+    "bSynchAddress"       / DescriptorField(description="The address of the endpoint used to communicate synchronization information if required by this endpoint. Must be set to 0", default=0)
+)
+
+ClassSpecificMidiStreamingBulkDataEndpointDescriptorHead = DescriptorFormat(
+    "bLength"             / DescriptorField(description="Size of this descriptor, in bytes: 4+n"),
+    "bDescriptorType"     / DescriptorNumber(AudioClassSpecificDescriptorTypes.CS_ENDPOINT),
+    "bDescriptorSubtype"  / DescriptorField(description="see MidiStreamingEndpointDescriptorSubtypes", default=MidiStreamingEndpointDescriptorSubtypes.MS_GENERAL),
+    "bNumEmbMIDIJack"     / DescriptorField(description="Number of Embedded MIDI Jacks: n", default=1)
+)
+
+ClassSpecificMidiStreamingBulkDataEndpointDescriptorElement = DescriptorFormat(
+    "baAssocJackID"       / construct.Int8ul # ID of the embedded eack that is associated with this endpoint
 )

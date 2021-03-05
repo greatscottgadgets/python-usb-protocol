@@ -5,17 +5,13 @@
     NOTE: This is not complete yet and will be extended as needed
 """
 
-from build.lib.usb_protocol.emitters import descriptor
-import unittest
-from enum import IntEnum
+from usb_protocol.emitters import descriptor
+from enum                  import IntEnum
 
 import construct
-from   construct  import this, Default
 
-from .. import LanguageIDs
 from ..descriptor import \
-    DescriptorField, DescriptorNumber, DescriptorFormat, \
-    BCDFieldAdapter, DescriptorLength
+    DescriptorField, DescriptorNumber, DescriptorFormat
 
 from .uac import *
 
@@ -304,3 +300,42 @@ ClassSpecificAudioStreamingIsochronousAudioDataEndpointDescriptor = DescriptorFo
     "bLockDelayUnits"     / DescriptorField(description="wLockDelay unit: 0: undefined; 1: milliseconds; 2: decoded PCM samples;", default=0),
     "wLockDelay"          / DescriptorField(description="the time it takes this endpoint to reliably lock its internal clock recovery circuitry. Units see bLockDelayUnits", default=0)
 )
+
+###################### MIDI #########################
+
+class MidiStreamingGroupTerminalBlockDescriptorSubtypes(IntEnum):
+    GR_TRM_BLOCK_UNDEFINED = 0x00
+    GR_TRM_BLOCK_HEADER    = 0x01
+    GR_TRM_BLOCK           = 0x02
+
+class GroupTerminalBlockType(IntEnum):
+    BIDIRECTIONAL = 0x00
+    INPUT_ONLY    = 0x01
+    OUTPUT_ONLY   = 0x02
+
+class GroupTerminalDefaultMidiProtocol(IntEnum):
+    USE_MIDI_CI                      = 0x00
+    MIDI_1_0_UP_TO_64_BITS           = 0x01
+    MIDI_1_0_UP_TO_64_BITS_AND_JRTS  = 0x02
+    MIDI_1_0_UP_TO_128_BITS          = 0x03
+    MIDI_1_0_UP_TO_128_BITS_AND_JRTS = 0x04
+    MIDI_2_0                         = 0x11
+    MIDI_2_0_AND_JRTS                = 0x12
+
+class GroupTerminalNumber(IntEnum):
+    GROUP_1  = 0x00
+    GROUP_2  = 0x01
+    GROUP_3  = 0x02
+    GROUP_4  = 0x03
+    GROUP_5  = 0x04
+    GROUP_6  = 0x05
+    GROUP_7  = 0x06
+    GROUP_8  = 0x07
+    GROUP_9  = 0x08
+    GROUP_10 = 0x09
+    GROUP_11 = 0x0A
+    GROUP_12 = 0x0B
+    GROUP_13 = 0x0C
+    GROUP_14 = 0x0D
+    GROUP_15 = 0x0E
+    GROUP_16 = 0x0F

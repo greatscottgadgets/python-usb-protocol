@@ -10,6 +10,8 @@ from ...types.descriptors.uac  import *
 from ...types.descriptors.uac2 import *
 from ...emitters.descriptor    import ComplexDescriptorEmitter
 
+###################### Audio #########################
+
 # Create our emitters.
 InterfaceAssociationDescriptorEmitter          = emitter_for_format(InterfaceAssociationDescriptor)
 StandardAudioControlInterfaceDescriptorEmitter = emitter_for_format(StandardAudioControlInterfaceDescriptor)

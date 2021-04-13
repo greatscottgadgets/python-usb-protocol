@@ -284,7 +284,7 @@ class DeviceDescriptorCollection:
         This adds the relevant descriptor, automatically. Note that populating derived
         fields such as bNumInterfaces aren't necessary; they'll be populated automatically.
         """
-        descriptor = ConfigurationDescriptorEmitter()
+        descriptor = ConfigurationDescriptorEmitter(collection=self)
         yield descriptor
 
         self.add_descriptor(descriptor)

@@ -25,7 +25,7 @@ class AudioClassSpecificASInterfaceDescriptorSubtypes(IntEnum):
     AS_GENERAL              = 0x01
     AS_VALID_FREQ_RANGE     = 0x02
 
-class ConnectorTypess(IntEnum):
+class ConnectorTypes(IntEnum):
     UNDEFINED                     = 0x00
     PHONE_CONNECTOR_2_5_MM        = 0x01
     PHONE_CONNECTOR_3_5_MM        = 0x02

@@ -129,8 +129,8 @@ class ConfigurationDescriptorEmitter(ComplexDescriptorEmitter):
 
     def _pre_emit(self):
 
-        # Count our interfaces.
-        self.bNumInterfaces = self._type_counts[StandardDescriptorNumbers.INTERFACE]
+        # Count our interfaces. Alternate settings of the same interface do not count multiple times.
+        self.bNumInterfaces = len(set([subordinate[2] for subordinate in self._subordinates if (subordinate[1] == StandardDescriptorNumbers.INTERFACE)]))
 
         # Figure out our total length.
         subordinate_length = sum(len(sub) for sub in self._subordinates)

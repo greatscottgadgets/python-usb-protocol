@@ -19,7 +19,7 @@ import construct
 
 from .standard import StandardDescriptorNumbers
 from ..descriptor import \
-    DescriptorField, DescriptorNumber, DescriptorFormat
+    DescriptorField, DescriptorNumber, DescriptorFormat, DescriptorLength
 
 
 class AudioInterfaceClassCode(IntEnum):
@@ -635,7 +635,7 @@ InputTerminalDescriptor = DescriptorFormat(
     "bmChannelConfig"     / DescriptorField(description="describes the spatial location of the logical channels", default=0, length=4),
     "bmControls"          / DescriptorField(description="OR combination of  ClockFrequencyControl, CopyProtectControl, ConnectorControl, ClusterControl, UnderflowControl and OverflowControl", default=0, length=2),
     "iChannelNames"       / DescriptorField(description="string descriptor index of the first logical channel name", default=0),
-    "iTerminal"           / DescriptorField(description="ID of the input terminal string description", default=0)
+    "iTerminal"           / DescriptorField(description="ID of the input terminal string descriptor", default=0)
 )
 
 OutputTerminalDescriptor = DescriptorFormat(
@@ -648,7 +648,19 @@ OutputTerminalDescriptor = DescriptorFormat(
     "bSourceID"           / DescriptorField(description="ID of the unit or terminal which is connected to this terminal"),
     "bCSourceID"          / DescriptorField(description="ID of the clock which is connected to this terminal"),
     "bmControls"          / DescriptorField(description="OR combination of  ClockFrequencyControl, CopyProtectControl, ConnectorControl, UnderflowControl>>2 and OverflowControl>>2", default=0, length=2),
-    "iTerminal"           / DescriptorField(description="ID of the input terminal string description", default=0)
+    "iTerminal"           / DescriptorField(description="ID of the input terminal string descriptor", default=0)
+)
+
+FeatureUnitDescriptorLength = construct.Rebuild(construct.Int8ul, construct.len_(construct.this.bmaControls) * 4 + 6)
+
+FeatureUnitDescriptor = DescriptorFormat(
+    "bLength"             / FeatureUnitDescriptorLength,
+    "bDescriptorType"     / DescriptorNumber(AudioClassSpecificStandardDescriptorNumbers.CS_INTERFACE),
+    "bDescriptorSubtype"  / DescriptorNumber(AudioClassSpecificACInterfaceDescriptorSubtypes.FEATURE_UNIT),
+    "bUnitID"             / DescriptorField(description="unique identifier for the unit within the audio function."),
+    "bSourceID"           / DescriptorField(description="ID of the unit or terminal which is connected to this terminal"),
+    "bmaControls"         / construct.Array((construct.this.bLength - 6)//4, construct.Int32ul) * "The control bitmap for all channels",
+    "iFeature"            / DescriptorField(description="ID of the feature unit string descriptor", default=0)
 )
 
 AudioStreamingInterfaceDescriptor = DescriptorFormat(
@@ -1030,6 +1042,51 @@ class UAC2Cases(unittest.TestCase):
                 0x01,        # Clock ID
                 0x00, 0x00,  # Controls
                 0x42         # Terminal name
+            ]))
+
+    def test_parse_feature_unit_descriptor(self):
+        # Parse the relevant descriptor ...
+        parsed = FeatureUnitDescriptor.parse([
+                0x12,                    # Length
+                0x24,                    # Type
+                0x06,                    # Subtype
+                0x06,                    # Unit ID
+                0x09,                    # Source ID
+                0x01, 0x00, 0x00, 0x00,  # Controls 0
+                0x02, 0x00, 0x00, 0x00,  # Controls 1
+                0x03, 0x00, 0x00, 0x00,  # Controls 2
+                0x42                     # Unit name
+            ])
+
+        # ... and check the descriptor's fields.
+        self.assertEqual(parsed.bLength, 18)
+        self.assertEqual(parsed.bDescriptorType, AudioClassSpecificStandardDescriptorNumbers.CS_INTERFACE)
+        self.assertEqual(parsed.bDescriptorSubtype, AudioClassSpecificACInterfaceDescriptorSubtypes.FEATURE_UNIT)
+        self.assertEqual(parsed.bUnitID, 0x06)
+        self.assertEqual(parsed.bSourceID, 0x09)
+        self.assertEqual(parsed.bmaControls, [0x0001, 0x0002, 0x0003])
+        self.assertEqual(parsed.iFeature, 0x42)
+
+    def test_build_feature_unit_descriptor(self):
+        # Build the relevant descriptor
+        data = FeatureUnitDescriptor.build({
+            'bUnitID': 6,
+            'bSourceID': 9,
+            'bmaControls': [1, 2, 3],
+            'iFeature': 0x42,
+        })
+
+        # ... and check the binary output
+        self.assertEqual(data, bytes([
+                0x12,                    # Length
+                0x24,                    # Type
+                0x06,                    # Subtype
+                0x06,                    # Unit ID
+                0x09,                    # Source ID
+                0x01, 0x00, 0x00, 0x00,  # Controls 0
+                0x02, 0x00, 0x00, 0x00,  # Controls 1
+                0x03, 0x00, 0x00, 0x00,  # Controls 2
+                0x42                     # Unit name
             ]))
 
     def test_parse_audio_streaming_interface_descriptor(self):

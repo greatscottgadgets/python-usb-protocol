@@ -884,7 +884,7 @@ class UAC2Cases(unittest.TestCase):
         parsed = ClockSourceDescriptor.parse([
             0x08,  # Length
             0x24,  # Type
-            0x0B,  # Subtype
+            0x0A,  # Subtype
             0x01,  # Clock ID
             0x01,  # Attributes
             0x01,  # Controls
@@ -916,7 +916,7 @@ class UAC2Cases(unittest.TestCase):
         self.assertEqual(data, bytes([
                 0x08,  # Length
                 0x24,  # Type
-                0x0B,  # Subtype
+                0x0A,  # Subtype
                 0x01,  # Clock ID
                 0x01,  # Attributes
                 0x01,  # Controls

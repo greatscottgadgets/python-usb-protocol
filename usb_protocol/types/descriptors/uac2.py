@@ -633,8 +633,8 @@ InputTerminalDescriptor = DescriptorFormat(
     "bCSourceID"          / DescriptorField(description="ID of the clock which is connected to this terminal"),
     "bNrChannels"         / DescriptorField(description="number of logical output channels in the terminal’s output channel cluster"),
     "bmChannelConfig"     / DescriptorField(description="describes the spatial location of the logical channels", default=0, length=4),
-    "bmControls"          / DescriptorField(description="OR combination of  ClockFrequencyControl, CopyProtectControl, ConnectorControl, ClusterControl, UnderflowControl and OverflowControl", default=0, length=2),
     "iChannelNames"       / DescriptorField(description="string descriptor index of the first logical channel name", default=0),
+    "bmControls"          / DescriptorField(description="OR combination of  ClockFrequencyControl, CopyProtectControl, ConnectorControl, ClusterControl, UnderflowControl and OverflowControl", default=0, length=2),
     "iTerminal"           / DescriptorField(description="ID of the input terminal string descriptor", default=0)
 )
 
@@ -948,8 +948,8 @@ class UAC2Cases(unittest.TestCase):
                 0x01,                    # Clock ID
                 0x02,                    # Number of channels
                 0x03, 0x00, 0x00, 0x00,  # Channel configuration
-                0x00,                    # First channel name
-                0x00, 0x00,              # Controls
+                0x23,                    # First channel name
+                0x05, 0x00,              # Controls
                 0x42                     # Terminal name
             ])
 
@@ -963,7 +963,8 @@ class UAC2Cases(unittest.TestCase):
         self.assertEqual(parsed.bCSourceID, 0x01)
         self.assertEqual(parsed.bNrChannels, 0x02)
         self.assertEqual(parsed.bmChannelConfig, 0x0003)
-        self.assertEqual(parsed.iChannelNames, 0x00)
+        self.assertEqual(parsed.iChannelNames, 0x23)
+        self.assertEqual(parsed.bmControls, 5)
         self.assertEqual(parsed.iTerminal, 0x42)
 
     def test_build_input_terminal_descriptor(self):
@@ -974,6 +975,8 @@ class UAC2Cases(unittest.TestCase):
             'bCSourceID': 1,
             'bNrChannels': 2,
             'bmChannelConfig': 3,
+            'iChannelNames': 0x23,
+            'bmControls': 5,
             'iTerminal': 0x42,
         })
 
@@ -988,8 +991,8 @@ class UAC2Cases(unittest.TestCase):
                 0x01,                    # Clock ID
                 0x02,                    # Number of channels
                 0x03, 0x00, 0x00, 0x00,  # Channel configuration
-                0x00,                    # First channel name
-                0x00, 0x00,              # Controls
+                0x23,                    # First channel name
+                0x05, 0x00,              # Controls
                 0x42                     # Terminal name
             ]))
 

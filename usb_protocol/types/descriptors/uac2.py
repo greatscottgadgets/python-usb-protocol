@@ -19,7 +19,7 @@ import construct
 
 from .standard import StandardDescriptorNumbers
 from ..descriptor import \
-    DescriptorField, DescriptorNumber, DescriptorFormat, DescriptorLength
+    DescriptorField, DescriptorNumber, DescriptorFormat
 
 
 class AudioInterfaceClassCode(IntEnum):
@@ -634,7 +634,7 @@ InputTerminalDescriptor = DescriptorFormat(
     "bNrChannels"         / DescriptorField(description="number of logical output channels in the terminal’s output channel cluster"),
     "bmChannelConfig"     / DescriptorField(description="describes the spatial location of the logical channels", default=0, length=4),
     "iChannelNames"       / DescriptorField(description="string descriptor index of the first logical channel name", default=0),
-    "bmControls"          / DescriptorField(description="OR combination of  ClockFrequencyControl, CopyProtectControl, ConnectorControl, ClusterControl, UnderflowControl and OverflowControl", default=0, length=2),
+    "bmControls"          / DescriptorField(description="OR combination of CopyProtectControl, ConnectorControl, OverloadControl, ClusterControl, UnderflowControl and OverflowControl", default=0, length=2),
     "iTerminal"           / DescriptorField(description="ID of the input terminal string descriptor", default=0)
 )
 

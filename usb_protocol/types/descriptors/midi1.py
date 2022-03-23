@@ -7,9 +7,31 @@
     [Midi10] refers to "Universal Serial Bus Device Class Definition for MIDI Devices", Release 1.0, November 1, 1999
 """
 
+import construct
+
 from enum import IntEnum
 
+from .. import (
+    DescriptorTypes,
+    USBSynchronizationType,
+    USBTransferType,
+    USBUsageType,
+)
+
 from .standard import StandardDescriptorNumbers
+
+from ..descriptor import (
+    DescriptorField,
+    DescriptorNumber,
+    DescriptorFormat,
+)
+
+from ..descriptors.uac1 import (
+    AudioInterfaceClassCode,
+    AudioInterfaceSubclassCodes,
+    AudioClassSpecificDescriptorTypes,
+    AudioClassSpecificACInterfaceDescriptorSubtypes,
+)
 
 
 class MidiStreamingInterfaceDescriptorSubtypes(IntEnum):

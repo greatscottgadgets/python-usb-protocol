@@ -11,7 +11,7 @@
     NOTE: This is not complete yet and will be extended as needed
 """
 
-from build.lib.usb_protocol.emitters import descriptor
+from usb_protocol.emitters import descriptor
 import unittest
 from enum import IntEnum
 
@@ -20,9 +20,14 @@ from   construct  import this, Default
 
 from .. import LanguageIDs
 from .standard import StandardDescriptorNumbers
-from ..descriptor import \
-    DescriptorField, DescriptorNumber, DescriptorFormat, \
-    BCDFieldAdapter, DescriptorLength
+
+from ..descriptor import (
+    DescriptorField,
+    DescriptorNumber,
+    DescriptorFormat,
+    BCDFieldAdapter,
+    DescriptorLength
+)
 
 
 class AudioInterfaceClassCode(IntEnum):

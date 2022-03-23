@@ -593,26 +593,6 @@ class USBUsageType(IntEnum):
     IMPLICIT_FEEDBACK = 2
 
 
-class USBTransferType(IntEnum):
-    CONTROL     = 0
-    ISOCHRONOUS = 1
-    BULK        = 2
-    INTERRUPT   = 3
-
-
-class USBSynchronizationType(IntEnum):
-    NONE         = 0x00
-    ASYNC        = 0x01
-    ADAPTIVE     = 0x02
-    SYNCHRONOUS  = 0x03
-
-
-class USBUsageType(IntEnum):
-    DATA              = 0
-    FEEDBACK          = 1
-    IMPLICIT_FEEDBACK = 2
-
-
 class USBStandardRequests(IntEnum):
     GET_STATUS        = 0
     CLEAR_FEATURE     = 1

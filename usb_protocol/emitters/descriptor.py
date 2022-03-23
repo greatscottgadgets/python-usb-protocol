@@ -7,11 +7,13 @@ from collections import defaultdict
 
 from . import ConstructEmitter
 
+from ..types.descriptor import DescriptorFormat
+
 class ComplexDescriptorEmitter(ConstructEmitter):
     """ Base class for emitting complex descriptors, which contain nested subordinates. """
 
-    # Base classes should override this.
-    DESCRIPTOR_FORMAT = None
+    # Base classes must override this.
+    DESCRIPTOR_FORMAT: DescriptorFormat
 
     def __init__(self, collection=None):
         """

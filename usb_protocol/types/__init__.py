@@ -197,8 +197,8 @@ class USBPacketID(IntFlag):
     def byte(self):
         """ Return the PID's value with its upper nibble. """
 
-        inverted_pid = self ^ 0b1111
-        full_pid     = (inverted_pid << 4) | self
+        inverted_pid = int(self) ^ 0b1111
+        full_pid     = (inverted_pid << 4) | int(self)
 
         return full_pid
 

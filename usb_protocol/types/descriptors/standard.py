@@ -15,9 +15,13 @@ import construct
 from   construct  import this, Default
 
 from .. import LanguageIDs
-from ..descriptor import \
-    DescriptorField, DescriptorNumber, DescriptorFormat, \
-    BCDFieldAdapter, DescriptorLength
+from ..descriptor import (
+    DescriptorField,
+    DescriptorNumber,
+    DescriptorFormat,
+    BCDFieldAdapter,
+    DescriptorLength
+)
 
 
 class StandardDescriptorNumbers(IntEnum):

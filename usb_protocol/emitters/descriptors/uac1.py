@@ -5,6 +5,7 @@
 
 from contextlib import contextmanager
 
+from .. import emitter_for_format
 from ...types.descriptors.uac1 import *
 
 AudioControlInterruptEndpointDescriptorEmitter  = emitter_for_format(AudioControlInterruptEndpointDescriptor)

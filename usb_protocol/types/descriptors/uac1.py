@@ -14,7 +14,7 @@ from enum import IntEnum
 from .standard import StandardDescriptorNumbers
 
 
-class AudioInterfaceClassCode(IntEnum):
+class AudioInterfaceClassCodes(IntEnum):
     # As defined in [Audio10], Table A-1
     AUDIO = 0x01
 

@@ -22,14 +22,14 @@ from ..descriptor import \
     DescriptorField, DescriptorNumber, DescriptorFormat
 
 
-class AudioInterfaceClassCode(IntEnum):
+class AudioInterfaceClassCodes(IntEnum):
     # As defined in [Audio20], Table A-4
     AUDIO = 0x01
 
 
-class AudioFunctionClassCode(IntEnum):
+class AudioFunctionClassCodes(IntEnum):
     # As defined in [Audio20], Table A-1
-    AUDIO_FUNCTION = AudioInterfaceClassCode.AUDIO
+    AUDIO_FUNCTION = AudioInterfaceClassCodes.AUDIO
 
 
 class AudioFunctionSubclassCodes(IntEnum):
@@ -584,7 +584,7 @@ InterfaceAssociationDescriptor = DescriptorFormat(
     "bDescriptorType"     / DescriptorNumber(StandardDescriptorNumbers.INTERFACE_ASSOCIATION),
     "bFirstInterface"     / DescriptorField(description="Interface number of the first interface that is associated with this function.", default=0),
     "bInterfaceCount"     / DescriptorField(description="Number of contiguous interfaces that are associated with this function"),
-    "bFunctionClass"      / DescriptorNumber(AudioFunctionClassCode.AUDIO_FUNCTION),
+    "bFunctionClass"      / DescriptorNumber(AudioFunctionClassCodes.AUDIO_FUNCTION),
     "bFunctionSubClass"   / DescriptorField(description="function subclass code (currently not used in uac2)", default=AudioFunctionCategoryCodes.FUNCTION_SUBCLASS_UNDEFINED), 
     "bFunctionProtocol"   / DescriptorNumber(AudioFunctionProtocolCodes.AF_VERSION_02_00),
     "iFunction"           / DescriptorField(description="Index of a string descriptor that describes this interface", default=0),
@@ -596,7 +596,7 @@ StandardAudioControlInterfaceDescriptor = DescriptorFormat(
     "bInterfaceNumber"    / DescriptorField(description="ID of the control interface"),
     "bAlternateSetting"   / DescriptorField(description="alternate setting for the interface (must be 0)", default=0),
     "bNumEndpoints"       / DescriptorField(description="number of endpoints used by this interface (excluding endpoint 0). This number is either 0 or 1 if the optional interrupt endpoint is present", default=0),
-    "bInterfaceClass"     / DescriptorNumber(AudioInterfaceClassCode.AUDIO),
+    "bInterfaceClass"     / DescriptorNumber(AudioInterfaceClassCodes.AUDIO),
     "bInterfaceSubClass"  / DescriptorNumber(AudioInterfaceSubclassCodes.AUDIO_CONTROL),
     "bInterfaceProtocol"  / DescriptorNumber(AudioInterfaceProtocolCodes.IP_VERSION_02_00),
     "iInterface"          / DescriptorField(description="index of string descriptor describing this interface", default=0),
@@ -669,7 +669,7 @@ AudioStreamingInterfaceDescriptor = DescriptorFormat(
     "bInterfaceNumber"    / DescriptorField(description="ID of the streaming interface"),
     "bAlternateSetting"   / DescriptorField(description="alternate setting number for the interface", default=0),
     "bNumEndpoints"       / DescriptorField(description="Number of data endpoints used (excluding endpoint 0). Can be: 0 (no data endpoint); 1 (data endpoint); 2 (data + explicit feedback endpoint)", default=0),
-    "bInterfaceClass"     / DescriptorNumber(AudioInterfaceClassCode.AUDIO),
+    "bInterfaceClass"     / DescriptorNumber(AudioInterfaceClassCodes.AUDIO),
     "bInterfaceSubClass"  / DescriptorNumber(AudioInterfaceSubclassCodes.AUDIO_STREAMING),
     "bInterfaceProtocol"  / DescriptorNumber(AudioInterfaceProtocolCodes.IP_VERSION_02_00),
     "iInterface"          / DescriptorField(description="index of a string descriptor describing this interface (0 = unused)", default=0)
@@ -819,7 +819,7 @@ class UAC2Cases(unittest.TestCase):
         self.assertEqual(parsed.bDescriptorType, StandardDescriptorNumbers.INTERFACE_ASSOCIATION)
         self.assertEqual(parsed.bFirstInterface, 1)
         self.assertEqual(parsed.bInterfaceCount, 2)
-        self.assertEqual(parsed.bFunctionClass, AudioFunctionClassCode.AUDIO_FUNCTION)
+        self.assertEqual(parsed.bFunctionClass, AudioFunctionClassCodes.AUDIO_FUNCTION)
         self.assertEqual(parsed.bFunctionSubClass, AudioFunctionCategoryCodes.FUNCTION_SUBCLASS_UNDEFINED)
         self.assertEqual(parsed.bFunctionProtocol, AudioFunctionProtocolCodes.AF_VERSION_02_00)
         self.assertEqual(parsed.iFunction, 0x42)
@@ -864,7 +864,7 @@ class UAC2Cases(unittest.TestCase):
         self.assertEqual(parsed.bInterfaceNumber, 1)
         self.assertEqual(parsed.bAlternateSetting, 2)
         self.assertEqual(parsed.bNumEndpoints, 0)
-        self.assertEqual(parsed.bInterfaceClass, AudioInterfaceClassCode.AUDIO)
+        self.assertEqual(parsed.bInterfaceClass, AudioInterfaceClassCodes.AUDIO)
         self.assertEqual(parsed.bInterfaceSubClass, AudioInterfaceSubclassCodes.AUDIO_CONTROL)
         self.assertEqual(parsed.bInterfaceProtocol, AudioInterfaceProtocolCodes.IP_VERSION_02_00)
         self.assertEqual(parsed.iInterface, 0x42)
@@ -1112,7 +1112,7 @@ class UAC2Cases(unittest.TestCase):
         self.assertEqual(parsed.bInterfaceNumber, 2)
         self.assertEqual(parsed.bAlternateSetting, 3)
         self.assertEqual(parsed.bNumEndpoints, 1)
-        self.assertEqual(parsed.bInterfaceClass, AudioInterfaceClassCode.AUDIO)
+        self.assertEqual(parsed.bInterfaceClass, AudioInterfaceClassCodes.AUDIO)
         self.assertEqual(parsed.bInterfaceSubClass, AudioInterfaceSubclassCodes.AUDIO_STREAMING)
         self.assertEqual(parsed.bInterfaceProtocol, AudioInterfaceProtocolCodes.IP_VERSION_02_00)
         self.assertEqual(parsed.iInterface, 0x42)

@@ -175,10 +175,10 @@ class DeviceDescriptorCollection:
         adds the relevant fields to our string descriptor collection.
         """
 
-        if isinstance(field_value, str):
-            return self.get_index_for_string(field_value)
-        else:
+        if isinstance(field_value, int):
             return field_value
+        else:
+            return self.get_index_for_string(field_value)
 
 
     def get_index_for_string(self, string):
@@ -202,7 +202,12 @@ class DeviceDescriptorCollection:
 
         # ... store our string descriptor with it ...
         identifier = StandardDescriptorNumbers.STRING, index
-        self._descriptors[identifier] = get_string_descriptor(string)
+        if isinstance(string, str):
+            descriptor = get_string_descriptor(string)
+        else:
+            # Allow custom descriptors
+            descriptor = string
+        self._descriptors[identifier] = descriptor
 
         # ... and return our index.
         return index

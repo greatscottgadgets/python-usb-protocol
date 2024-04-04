@@ -25,14 +25,14 @@ from ..descriptor import \
     BCDFieldAdapter, DescriptorLength
 
 
-class AudioInterfaceClassCode(IntEnum):
+class AudioInterfaceClassCodes(IntEnum):
     # As defined in [Audio30], Table A-4
     AUDIO = 0x01
 
 
-class AudioFunctionClassCode(IntEnum):
+class AudioFunctionClassCodes(IntEnum):
     # As defined in [Audio30], Table A-1
-    AUDIO_FUNCTION = AudioInterfaceClassCode.AUDIO
+    AUDIO_FUNCTION = AudioInterfaceClassCodes.AUDIO
 
 
 class AudioFunctionSubclassCodes(IntEnum):
@@ -610,7 +610,7 @@ AudioStreamingInterfaceDescriptor = DescriptorFormat(
     "bInterfaceNumber"    / DescriptorField(description="ID of the streaming interface"),
     "bAlternateSetting"   / DescriptorField(description="alternate setting number for the interface", default=0),
     "bNumEndpoints"       / DescriptorField(description="Number of data endpoints used (excluding endpoint 0). Can be: 0 (no data endpoint); 1 (data endpoint); 2 (data + explicit feedback endpoint)", default=0),
-    "bInterfaceClass"     / DescriptorNumber(AudioInterfaceClassCode.AUDIO),
+    "bInterfaceClass"     / DescriptorNumber(AudioInterfaceClassCodes.AUDIO),
     "bInterfaceSubClass"  / DescriptorNumber(AudioInterfaceSubclassCodes.AUDIO_STREAMING),
     "bInterfaceProtocol"  / DescriptorNumber(AudioInterfaceProtocolCodes.IP_VERSION_03_00),
     "iInterface"          / DescriptorField(description="index of a string descriptor describing this interface (0 = unused)")

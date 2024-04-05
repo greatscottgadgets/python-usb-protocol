@@ -230,6 +230,15 @@ class DeviceDescriptorCollection:
         # Figure out the identifier (type + index) for this descriptor...
         if (descriptor_type is None):
             descriptor_type = descriptor[1]
+
+        # Try to convert descriptor_type to StandardDescriptorNumbers ...
+        if (type(descriptor_type) == int):
+            try:
+                descriptor_type = StandardDescriptorNumbers(descriptor_type)
+            except ValueError:
+                # If not possible, keep int
+                pass
+
         identifier = descriptor_type, index
 
         # ... and store it.

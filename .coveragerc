@@ -1,8 +1,0 @@
-[run]
-omit =
-    .tox/*
-    examples/*
-    setup.py
-
-plugins =
-    coverage_python_version

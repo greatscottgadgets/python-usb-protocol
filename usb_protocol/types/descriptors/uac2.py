@@ -18,8 +18,12 @@ from enum                  import IntEnum
 import construct
 
 from .standard import StandardDescriptorNumbers
-from ..descriptor import \
-    DescriptorField, DescriptorNumber, DescriptorFormat
+
+from ..descriptor import (
+    DescriptorField,
+    DescriptorNumber,
+    DescriptorFormat,
+)
 
 
 class AudioInterfaceClassCodes(IntEnum):
@@ -556,7 +560,7 @@ AudioControlInterruptEndpointDescriptor = DescriptorFormat(
     "bEndpointAddress"    / DescriptorField(description="The address of the endpoint, use USBDirection.*.from_endpoint_address()"),
     "bmAttributes"        / DescriptorField(description="D1..0: Transfer type (0b11 = Interrupt)", default=0b11),
     "wMaxPacketSize"      / DescriptorField(description="Maximum packet size this endpoint is capable of. Used here to pass 6-byte interrupt information.", default=6),
-    "bInterval"           / DescriptorField(description="Interval for polling the Interrupt endpoint")
+    "bInterval"           / DescriptorField(description="Interval for polling the Interrupt endpoint"),
 )
 
 # As defined in [Audio30], Table 4-33
@@ -566,7 +570,7 @@ AudioStreamingIsochronousEndpointDescriptor = DescriptorFormat(
     "bEndpointAddress"    / DescriptorField(description="The address of the endpoint, use USBDirection.*.from_endpoint_address()"),
     "bmAttributes"        / DescriptorField(description="D1..0: transfer type (01=isochronous); D3..2: synchronization type (01=asynchronous/10=adaptive/11=synchronous); D5..4: usage (00=data/10=feedback)", default=0b000101),
     "wMaxPacketSize"      / DescriptorField(description="Maximum packet size this endpoint is capable of. Used here to pass 6-byte interrupt information.", default=6),
-    "bInterval"           / DescriptorField(description="Interval for polling the Interrupt endpoint")
+    "bInterval"           / DescriptorField(description="Interval for polling the Interrupt endpoint"),
 )
 
 # As defined in [Audio30], Table 4-35
@@ -576,7 +580,7 @@ AudioStreamingIsochronousFeedbackEndpointDescriptor = DescriptorFormat(
     "bEndpointAddress"    / DescriptorField(description="The address of the endpoint, use USBDirection.*.from_endpoint_address()"),
     "bmAttributes"        / DescriptorField(description="D1..0: transfer type (01=isochronous); D3..2: synchronization type (00=no sync); D5..4: usage (10=feedback)", default=0b00100001),
     "wMaxPacketSize"      / DescriptorField(description="Maximum packet size this endpoint is capable of. Used here to pass 6-byte interrupt information.", default=6),
-    "bInterval"           / DescriptorField(description="Interval for polling the Interrupt endpoint")
+    "bInterval"           / DescriptorField(description="Interval for polling the Interrupt endpoint"),
 )
 
 InterfaceAssociationDescriptor = DescriptorFormat(
@@ -635,7 +639,7 @@ InputTerminalDescriptor = DescriptorFormat(
     "bmChannelConfig"     / DescriptorField(description="describes the spatial location of the logical channels", default=0, length=4),
     "iChannelNames"       / DescriptorField(description="string descriptor index of the first logical channel name", default=0),
     "bmControls"          / DescriptorField(description="OR combination of CopyProtectControl, ConnectorControl, OverloadControl, ClusterControl, UnderflowControl and OverflowControl", default=0, length=2),
-    "iTerminal"           / DescriptorField(description="ID of the input terminal string descriptor", default=0)
+    "iTerminal"           / DescriptorField(description="ID of the input terminal string descriptor", default=0),
 )
 
 OutputTerminalDescriptor = DescriptorFormat(
@@ -648,7 +652,7 @@ OutputTerminalDescriptor = DescriptorFormat(
     "bSourceID"           / DescriptorField(description="ID of the unit or terminal which is connected to this terminal"),
     "bCSourceID"          / DescriptorField(description="ID of the clock which is connected to this terminal"),
     "bmControls"          / DescriptorField(description="OR combination of  ClockFrequencyControl, CopyProtectControl, ConnectorControl, UnderflowControl>>2 and OverflowControl>>2", default=0, length=2),
-    "iTerminal"           / DescriptorField(description="ID of the input terminal string descriptor", default=0)
+    "iTerminal"           / DescriptorField(description="ID of the input terminal string descriptor", default=0),
 )
 
 FeatureUnitDescriptorLength = construct.Rebuild(construct.Int8ul, construct.len_(construct.this.bmaControls) * 4 + 6)
@@ -660,7 +664,7 @@ FeatureUnitDescriptor = DescriptorFormat(
     "bUnitID"             / DescriptorField(description="unique identifier for the unit within the audio function."),
     "bSourceID"           / DescriptorField(description="ID of the unit or terminal which is connected to this terminal"),
     "bmaControls"         / construct.Array((construct.this.bLength - 6)//4, construct.Int32ul) * "The control bitmap for all channels",
-    "iFeature"            / DescriptorField(description="ID of the feature unit string descriptor", default=0)
+    "iFeature"            / DescriptorField(description="ID of the feature unit string descriptor", default=0),
 )
 
 AudioStreamingInterfaceDescriptor = DescriptorFormat(
@@ -672,7 +676,7 @@ AudioStreamingInterfaceDescriptor = DescriptorFormat(
     "bInterfaceClass"     / DescriptorNumber(AudioInterfaceClassCodes.AUDIO),
     "bInterfaceSubClass"  / DescriptorNumber(AudioInterfaceSubclassCodes.AUDIO_STREAMING),
     "bInterfaceProtocol"  / DescriptorNumber(AudioInterfaceProtocolCodes.IP_VERSION_02_00),
-    "iInterface"          / DescriptorField(description="index of a string descriptor describing this interface (0 = unused)", default=0)
+    "iInterface"          / DescriptorField(description="index of a string descriptor describing this interface (0 = unused)", default=0),
 )
 
 ClassSpecificAudioStreamingInterfaceDescriptor = DescriptorFormat(
@@ -685,7 +689,7 @@ ClassSpecificAudioStreamingInterfaceDescriptor = DescriptorFormat(
     "bmFormats"           / DescriptorField(description="audio data formats which can be used with this interface", length=4),
     "bNrChannels"         / DescriptorField(description="Number of physical channels in the AS Interface audio channel cluster"),
     "bmChannelConfig"     / DescriptorField(description="spatial location of the physical channels", default=0, length=4),
-    "iChannelNames"       / DescriptorField(description="ndex of a string descriptor, describing the name of the first physical channel.", default=0)
+    "iChannelNames"       / DescriptorField(description="ndex of a string descriptor, describing the name of the first physical channel.", default=0),
 )
 
 TypeIFormatTypeDescriptor = DescriptorFormat(
@@ -694,7 +698,7 @@ TypeIFormatTypeDescriptor = DescriptorFormat(
     "bDescriptorSubtype"  / DescriptorNumber(AudioClassSpecificASInterfaceDescriptorSubtypes.FORMAT_TYPE),
     "bFormatType"         / DescriptorNumber(FormatTypes.FORMAT_TYPE_I),
     "bSubslotSize"        / DescriptorField(description="number of bytes occupied by one audio subslot (1, 2, 3 or 4)"),
-    "bBitResolution"      / DescriptorField(description="number of effectively used bits out of the available bits in an audio subslot")
+    "bBitResolution"      / DescriptorField(description="number of effectively used bits out of the available bits in an audio subslot"),
 )
 
 ExtendedTypeIFormatTypeDescriptor = DescriptorFormat(
@@ -706,7 +710,7 @@ ExtendedTypeIFormatTypeDescriptor = DescriptorFormat(
     "bBitResolution"      / DescriptorField(description="number of effectively used bits out of the available bits in an audio subslot"),
     "bHeaderLength"       / DescriptorField(description="size of the packet header in bytes"),
     "bControlSize"        / DescriptorField(description="size of the control channel words in bytes"),
-    "bSideBandProtocol"   / DescriptorField(description="side band protocol, see SidebandProtocols", default=SidebandProtocols.PROTOCOL_UNDEFINED)
+    "bSideBandProtocol"   / DescriptorField(description="side band protocol, see SidebandProtocols", default=SidebandProtocols.PROTOCOL_UNDEFINED),
 )
 
 TypeIIFormatTypeDescriptor = DescriptorFormat(
@@ -715,7 +719,7 @@ TypeIIFormatTypeDescriptor = DescriptorFormat(
     "bDescriptorSubtype"  / DescriptorNumber(AudioClassSpecificASInterfaceDescriptorSubtypes.FORMAT_TYPE),
     "bFormatType"         / DescriptorNumber(FormatTypes.FORMAT_TYPE_II),
     "wMaxBitRate"         / DescriptorField(description="maximum bitrate of this interface in kbits/s"),
-    "wSlotsPerFrame"      / DescriptorField(description="number of PCM audio slots in one audio frame")
+    "wSlotsPerFrame"      / DescriptorField(description="number of PCM audio slots in one audio frame"),
 )
 
 ExtendedTypeIIFormatTypeDescriptor = DescriptorFormat(
@@ -726,7 +730,7 @@ ExtendedTypeIIFormatTypeDescriptor = DescriptorFormat(
     "wMaxBitRate"         / DescriptorField(description="maximum bitrate of this interface in kbits/s"),
     "wSamplesPerFrame"    / DescriptorField(description="number of PCM audio samples in one audio frame"),
     "bHeaderLength"       / DescriptorField(description="size of the packet header in bytes"),
-    "bSideBandProtocol"   / DescriptorField(description="side band protocol, see SidebandProtocols", default=SidebandProtocols.PROTOCOL_UNDEFINED)
+    "bSideBandProtocol"   / DescriptorField(description="side band protocol, see SidebandProtocols", default=SidebandProtocols.PROTOCOL_UNDEFINED),
 )
 
 TypeIIIFormatTypeDescriptor = DescriptorFormat(
@@ -746,7 +750,7 @@ ExtendedTypeIIIFormatTypeDescriptor = DescriptorFormat(
     "bSubslotSize"        / DescriptorField(description="number of bytes occupied by one audio subslot (must be 2)", default=2),
     "bBitResolution"      / DescriptorField(description="number of effectively used bits out of the available bits in an audio subslot"),
     "bHeaderLength"       / DescriptorField(description="size of the packet header in bytes"),
-    "bSideBandProtocol"   / DescriptorField(description="side band protocol, see SidebandProtocols", default=SidebandProtocols.PROTOCOL_UNDEFINED)
+    "bSideBandProtocol"   / DescriptorField(description="side band protocol, see SidebandProtocols", default=SidebandProtocols.PROTOCOL_UNDEFINED),
 )
 
 ClassSpecificAudioStreamingIsochronousAudioDataEndpointDescriptor = DescriptorFormat(
@@ -756,7 +760,7 @@ ClassSpecificAudioStreamingIsochronousAudioDataEndpointDescriptor = DescriptorFo
     "bmAttributes"        / DescriptorField(description="bit D7 = 1: only packets with size wMaxPacketSize allowed", default=0),
     "bmControls"          / DescriptorField(description="D1..0: pitch control D3..2: data overrun control; D5..4: data underrun control;", default=0),
     "bLockDelayUnits"     / DescriptorField(description="wLockDelay unit: 0: undefined; 1: milliseconds; 2: decoded PCM samples;", default=0),
-    "wLockDelay"          / DescriptorField(description="the time it takes this endpoint to reliably lock its internal clock recovery circuitry. Units see bLockDelayUnits", default=0)
+    "wLockDelay"          / DescriptorField(description="the time it takes this endpoint to reliably lock its internal clock recovery circuitry. Units see bLockDelayUnits", default=0),
 )
 
 ###################### MIDI #########################
@@ -829,7 +833,7 @@ class UAC2Cases(unittest.TestCase):
         data = InterfaceAssociationDescriptor.build({
             'bFirstInterface': 1,
             'bInterfaceCount': 2,
-            'iFunction': 0x42
+            'iFunction': 0x42,
         })
 
         # ... and check the binary output
@@ -875,7 +879,7 @@ class UAC2Cases(unittest.TestCase):
             'bInterfaceNumber': 1,
             'bAlternateSetting': 2,
             'bNumEndpoints': 0,
-            'iInterface': 0x42
+            'iInterface': 0x42,
         })
 
         # ... and check the binary output

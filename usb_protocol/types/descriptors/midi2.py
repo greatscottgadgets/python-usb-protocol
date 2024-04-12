@@ -22,7 +22,7 @@ from ..descriptor import (
 )
 
 from ..descriptors.uac1 import (
-    AudioInterfaceClassCode,
+    AudioInterfaceClassCodes,
     AudioInterfaceSubclassCodes,
     AudioClassSpecificDescriptorTypes,
     AudioClassSpecificACInterfaceDescriptorSubtypes,
@@ -100,6 +100,3 @@ StandardMidiStreamingDataEndpointDescriptor = DescriptorFormat(
     "wMaxPacketSize"      / DescriptorField(description="Maximum packet size this endpoint is capable of sending or receiving"),
     "bInterval"           / DescriptorField(description="Interval for polling endpoint for Interrupt data transfers. For bulk endpoints this field is ignored and must be reset to 0", default=0)
 )
-
-
-

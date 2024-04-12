@@ -11,21 +11,29 @@ class ConstructEmitter:
     """ Class that creates a simple emitter based on a construct struct.
 
     For example, if we have a construct format that looks like the following:
+
+    .. code-block:: python
+
         MyStruct = struct(
             "a" / Int8
             "b" / Int8
         )
 
-    We could create emit an object like follows:
+
+    We could create and emit an object like follows:
+
+    .. code-block:: python
+
         emitter   = ConstructEmitter(MyStruct)
         emitter.a = 0xab
         emitter.b = 0xcd
         my_bytes  = emitter.emit() # "\xab\xcd"
+
     """
 
     def __init__(self, struct):
         """
-        Parmeters:
+        Parameters:
             construct_format -- The format for which to create an emitter.
         """
         self.__dict__['format'] = struct

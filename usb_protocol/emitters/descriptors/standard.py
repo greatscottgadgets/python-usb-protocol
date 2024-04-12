@@ -219,8 +219,7 @@ class DeviceDescriptorCollection:
         Parameters:
             descriptor      -- The descriptor to be added.
             index           -- The index of the relevant descriptor. Defaults to 0.
-            descriptor_type -- The type of the descriptor to be added. If `None`,
-                               this is automatically derived from the descriptor contents.
+            descriptor_type -- The type of the descriptor to be added. If `None`, this is automatically derived from the descriptor contents.
         """
 
         # If this is an emitter rather than a descriptor itself, convert it.

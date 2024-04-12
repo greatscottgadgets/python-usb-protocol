@@ -48,6 +48,11 @@ class USBDirection(IntEnum):
             return endpoint_number
 
 
+def endpoint_number_from_address(number):
+    """ Helper function that converts an endpoint address to an endpoint number, discarding direction. """
+    return number & 0x7F
+
+
 class USBPIDCategory(IntFlag):
     """ Category constants for each of the groups that PIDs can fall under. """
 
@@ -258,10 +263,6 @@ class USBTransferType(IntEnum):
     ISOCHRONOUS = 1
     BULK        = 2
     INTERRUPT   = 3
-
-
-def endpoint_number_from_address(number):
-    return number & 0x7F
 
 
 LANGUAGE_NAMES = {
@@ -620,6 +621,3 @@ class USBStandardRequests(IntEnum):
     SET_INTERFACE_DS     = 23
     SET_SEL              = 48
     SET_ISOCH_DELAY      = 49
-
-
-

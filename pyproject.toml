@@ -1,15 +1,83 @@
-[build-system]  # these versions are valid on python 3.7 and up
-requires = [
-    "setuptools>=61",
-    "setuptools_scm[toml]>=7",
+[project]
+name = "usb_protocol"
+description = "utilities, data structures, constants, parsers, and tools for working with USB data"
+dynamic = ["version"]
+dependencies = [
+    "construct",
+    'importlib-metadata; python_version < "3.8"',
 ]
-build-backend = "setuptools.build_meta"
+requires-python = ">=3.7"
+authors = [
+    {name = "Katherine J. Temkin", email = "ktemkin@greatscottgadgets.com"},
+    {name = "Antoine van Gelder", email = "antoine@greatscottgadgets.com"},
+]
 
-[tool.setuptools_scm]
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Environment :: Plugins",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development",
+    "Topic :: Security",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.optional-dependencies]
+doc = [
+    "sphinx==7.2.6",
+    "sphinx_rtd_theme==2.0.0",
+    "sphinxcontrib-apidoc",
+    "readthedocs-sphinx-search==0.3.2",
+    "jinja2==3.1.3",
+]
+cov = [
+    "coverage[toml]",
+    "coverage_python_version",
+]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+
+[project.urls]
+Homepage = "https://github.com/greatscottgadgets/python-usb-protocol"
+Repository = "https://github.com/greatscottgadgets/python-usb-protocol.git"
+Issues = "https://github.com/greatscottgadgets/python-usb-protocol/issues"
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.1"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/.tox",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["usb_protocol"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = ["tests",]
+python_files = "*.py"
+testpaths = ["usb_protocol",]
 log_cli =  true
 doctest_optionflags = ["ELLIPSIS", "NORMALIZE_WHITESPACE",]
 addopts = "--strict-markers"
@@ -17,10 +85,7 @@ markers = "subscript"
 
 [tool.coverage.run]
 branch = true
-source = [
-    "usb_protocol",
-    ".tox/py*/lib/python*/site-packages/",
-]
+source = ["usb_protocol",]
 omit = [
     "docs",
     "examples",
@@ -29,10 +94,13 @@ omit = [
 ]
 
 [tool.coverage.paths]
-source = ["usb_protocol"]
+source = [
+    "usb_protocol",
+    ".tox/py*/lib/*/site-packages/",
+]
 
 [tool.coverage.report]
-fail_under = 50
+fail_under = 80
 show_missing = true
 
 [tool.black]
@@ -65,3 +133,6 @@ include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true
 ensure_newline_before_comments = true
+
+[tool.bandit]
+exclude_dirs = ["docs"]

@@ -1,0 +1,47 @@
+[flake8]
+exclude =
+    .git,
+    __pycache__,
+    examples,
+    build,
+    dist
+
+max-line-length = 250
+max-complexity = 10
+addons = file,open,basestring,xrange,unicode,long,cmp
+ignore =
+    # line break before binary operator
+    W503,
+    # imported but unused
+    F401,
+    # star import used; unable to detect undefined names
+    F403,
+    # may be undefined, or defined from star imports
+    F405,
+    # too many leading '#' for block comment
+    E266,
+    # whitespace before ':'
+    E203,
+    # multiple spaces before operator
+    E221,
+    # multiple spaces after operator
+    E222,
+    # multiple spaces after ','
+    E241,
+    # at least two spaces before inline comment
+    E261,
+    # multiple spaces after keyword
+    E271,
+    # multiple spaces before keyword
+    E272,
+    # too many blank lines
+    E303,
+    # expected 2 blank lines, found 1
+    E302,
+    # expected 2 blank lines after class or function definition
+    E305,
+    # do not assign a lambda expression, use a def
+    E731,
+    # allow over/under indenting for now
+    E126,
+    E121,

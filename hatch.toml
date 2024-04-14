@@ -1,0 +1,20 @@
+[envs.default]
+dependencies = [
+  "coverage[toml]",
+  "pytest",
+  "hatch-vcs",
+]
+[envs.default.scripts]
+test = "pytest {args:usb_protocol}"
+test-cov = "coverage run -m pytest {args:usb_protocol}"
+cov-report = [
+  "- coverage combine",
+  "coverage report --show-missing",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+
+[[envs.all.matrix]]
+python = ["3.7", "3.8", "3.9", "3.10", "3.11"]

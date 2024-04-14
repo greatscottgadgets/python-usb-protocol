@@ -1,0 +1,67 @@
+[build-system]  # these versions are valid on python 3.7 and up
+requires = [
+    "setuptools>=61",
+    "setuptools_scm[toml]>=7",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests",]
+log_cli =  true
+doctest_optionflags = ["ELLIPSIS", "NORMALIZE_WHITESPACE",]
+addopts = "--strict-markers"
+markers = "subscript"
+
+[tool.coverage.run]
+branch = true
+source = [
+    "usb_protocol",
+    ".tox/py*/lib/python*/site-packages/",
+]
+omit = [
+    "docs",
+    "examples",
+    "tests",
+    ".tox",
+]
+
+[tool.coverage.paths]
+source = ["usb_protocol"]
+
+[tool.coverage.report]
+fail_under = 50
+show_missing = true
+
+[tool.black]
+line-length = 250
+skip-string-normalization = true
+include = '\.py$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | docs
+  | dist
+  | tests
+)/
+'''
+
+[tool.pycln]
+all = true
+
+[tool.isort]
+line_length = 72
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true

@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-git-versioning<2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "usb-protocol"
+description = "Python library providing utilities, data structures, constants, parsers, and tools for working with the USB protocol."
+license = { text = "BSD" }
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    {name = "Great Scott Gadgets", email = "dev@greatscottgadgets.com"},
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Environment :: Console",
+    "Environment :: Plugins",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
+    "Topic :: Security",
+    "Topic :: System :: Hardware :: Universal Serial Bus (USB)",
+]
+
+dependencies = [
+    "construct~=2.10"
+]
+
+dynamic = ["version"]
+
+[project.urls]
+Documentation = "https://python-usb-protocol.readthedocs.io"
+Repository    = "https://github.com/greatscottgadgets/python-usb-protocol"
+Issues        = "https://github.com/greatscottgadgets/python-usb-protocol/issues"
+
+[tool.setuptools.package-dir]
+usb_protocol = "usb_protocol"
+
+# TODO ???
+#[tool.setuptools.packages.find]
+#where = ["."]
+#include = ["usb_protocol"]
+
+[tool.setuptools-git-versioning]
+enabled = true
+starting_version = "0.0.1"

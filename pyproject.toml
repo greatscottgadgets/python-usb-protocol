@@ -46,11 +46,6 @@ Issues        = "https://github.com/greatscottgadgets/python-usb-protocol/issues
 [tool.setuptools.package-dir]
 usb_protocol = "usb_protocol"
 
-# TODO ???
-#[tool.setuptools.packages.find]
-#where = ["."]
-#include = ["usb_protocol"]
-
 [tool.setuptools-git-versioning]
 enabled = true
 starting_version = "0.0.1"

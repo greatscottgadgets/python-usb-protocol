@@ -48,4 +48,4 @@ usb_protocol = "usb_protocol"
 
 [tool.setuptools-git-versioning]
 enabled = true
-starting_version = "0.0.1"
+starting_version = "0.9.0"

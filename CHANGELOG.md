@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 -->
 
-## [0.1.0] - 2024-TODO-TODO
+## [0.9.0] - 2024-06-04
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/greatscottgadgets/python-usb-protocol/compare/0.1.0...HEAD
-[0.1.0]: https://github.com/greatscottgadgets/python-usb-protocol/releases/tag/0.1.0
+[Unreleased]: https://github.com/greatscottgadgets/python-usb-protocol/compare/0.9.0...HEAD
+[0.1.0]: https://github.com/greatscottgadgets/python-usb-protocol/releases/tag/0.9.0

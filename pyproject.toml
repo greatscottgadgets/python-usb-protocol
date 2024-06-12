@@ -49,3 +49,6 @@ usb_protocol = "usb_protocol"
 [tool.setuptools-git-versioning]
 enabled = true
 starting_version = "0.9.0"
+
+[tool.pdm.scripts]
+test.cmd = "python -m unittest discover -t . -v"

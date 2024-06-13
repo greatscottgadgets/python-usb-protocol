@@ -621,3 +621,8 @@ class USBStandardRequests(IntEnum):
     SET_INTERFACE_DS     = 23
     SET_SEL              = 48
     SET_ISOCH_DELAY      = 49
+
+class USBStandardFeatures(IntEnum):
+    ENDPOINT_HALT        = 0
+    DEVICE_REMOTE_WAKEUP = 1
+    TEST_MODE            = 2

@@ -277,8 +277,8 @@ class DescriptorParserCases(unittest.TestCase):
             0xFF,         # subclass
             0xFF,         # protocol
             64,           # ep0 max packet size
-            0xd0, 0x16,   # VID
-            0x3b, 0x0f,   # PID
+            0x09, 0x12,   # VID
+            0x01, 0x00,   # PID
             0x00, 0x00,   # device rev
             0x01,         # manufacturer string
             0x02,         # product string
@@ -297,8 +297,8 @@ class DescriptorParserCases(unittest.TestCase):
         self.assertEqual(parsed.bDeviceSubclass,   0xFF)
         self.assertEqual(parsed.bDeviceProtocol,   0xFF)
         self.assertEqual(parsed.bMaxPacketSize0,     64)
-        self.assertEqual(parsed.idVendor,        0x16d0)
-        self.assertEqual(parsed.idProduct,       0x0f3b)
+        self.assertEqual(parsed.idVendor,        0x1209)
+        self.assertEqual(parsed.idProduct,       0x0001)
         self.assertEqual(parsed.bcdDevice,            0)
         self.assertEqual(parsed.iManufacturer,        1)
         self.assertEqual(parsed.iProduct,             2)

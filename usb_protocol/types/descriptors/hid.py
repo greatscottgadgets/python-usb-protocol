@@ -9,6 +9,18 @@ from enum import IntEnum
 from ..descriptor import \
     DescriptorField, DescriptorNumber, DescriptorFormat
 
+class HidInterfaceClassCodes(IntEnum):
+    HID = 0x03
+
+class HidInterfaceSubclassCodes(IntEnum):
+    NO_SUBCLASS = 0
+    BOOT        = 1
+
+class HidInterfaceProtocols(IntEnum):
+    NONE     = 0
+    KEYBOARD = 1
+    MOUSE    = 2
+
 class HidClassSpecificDescriptorTypes(IntEnum):
     CS_UNDEFINED     = 0x20
     CS_HID           = 0x21

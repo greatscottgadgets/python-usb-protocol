@@ -11,19 +11,19 @@ class HIDDescriptorEmitter(ComplexDescriptorEmitter):
     DESCRIPTOR_FORMAT = HIDDescriptor
     
     @contextmanager
-    def ReportDescriptor(self):
+    def DescriptorReference(self):
         """ Context manager that allows addition of a subordinate report descriptor.
 
-        It can be used with a `with` statement; and yields an HIDReportDescriptorEmitter
+        It can be used with a `with` statement; and yields an HIDDescriptorReferenceEmitter
         that can be populated:
 
-            with hiddescriptor.ReportDescriptor() as r:
+            with hiddescriptor.DescriptorReference() as r:
                 r.wDescriptorLength = 0x10
 
         This adds the relevant descriptor, automatically.
         """
 
-        descriptor = HIDReportDescriptorEmitter()
+        descriptor = HIDDescriptorReferenceEmitter()
         yield descriptor
 
         self.add_subordinate_descriptor(descriptor)
@@ -36,4 +36,4 @@ class HIDDescriptorEmitter(ComplexDescriptorEmitter):
         pass
 
 
-HIDReportDescriptorEmitter = emitter_for_format(HIDReportDescriptor)
+HIDDescriptorReferenceEmitter = emitter_for_format(HIDDescriptorReference)

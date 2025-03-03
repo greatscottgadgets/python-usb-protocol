@@ -64,7 +64,7 @@ class ExtendedPropertiesDescriptorEmitter(ComplexDescriptorEmitter):
             with d.Property() as p:
                 p.dwPropertyDataType = RegistryTypes.REG_EXPAND_SZ
                 p.PropertyName       = "Icons"
-                p.PropertyData       = "%SystemRoot%\system32\shell32.dll,-233"
+                p.PropertyData       = "%SystemRoot%\\system32\\shell32.dll,-233"
 
         This adds the relevant descriptor, automatically.
         """
@@ -232,7 +232,7 @@ class MicrosoftOS10EmitterTests(unittest.TestCase):
             with d.Property() as p:
                 p.dwPropertyDataType = RegistryTypes.REG_EXPAND_SZ
                 p.PropertyName       = "Icons"
-                p.PropertyData       = "%SystemRoot%\system32\shell32.dll,-233"
+                p.PropertyData       = "%SystemRoot%\\system32\\shell32.dll,-233"
             with d.Property() as p:
                 p.dwPropertyDataType = RegistryTypes.REG_SZ
                 p.PropertyName       = "Label"

@@ -34,9 +34,19 @@ def get_string_descriptor(string):
     return emitter.emit()
 
 # ... and complex emitters.
+class InterfaceAssociationDescriptorEmitter(ComplexDescriptorEmitter):
+    """ Emitter that creates an InterfaceAssociationDescriptor. """
+
+    DESCRIPTOR_FORMAT = InterfaceAssociationDescriptor
+
+    def _pre_emit(self):
+        # Ensure that our function string is an index, if we can.
+        if self._collection and hasattr(self, 'iFunction'):
+            self.iFunction = self._collection.ensure_string_field_is_index(self.iFunction)
+
 
 class EndpointDescriptorEmitter(ComplexDescriptorEmitter):
-    """ Emitter that creates an InterfaceDescriptor. """
+    """ Emitter that creates an EndpointDescriptor. """
 
     DESCRIPTOR_FORMAT = EndpointDescriptor
 
@@ -122,6 +132,25 @@ class ConfigurationDescriptorEmitter(ComplexDescriptorEmitter):
         fields such as bNumEndpoints aren't necessary; they'll be populated automatically.
         """
         descriptor = InterfaceDescriptorEmitter(collection=self._collection)
+        yield descriptor
+
+        self.add_subordinate_descriptor(descriptor)
+
+
+    @contextmanager
+    def InterfaceAssociationDescriptor(self):
+        """ Context manager that allows addition of a subordinate interface association descriptor.
+
+        It can be used with a `with` statement; and yields an InterfaceAssociationDescriptorEmitter
+        that can be populated:
+
+            with interface.InterfaceAssociationDescriptor() as d:
+                d.bFirstInterface = 0
+                [snip]
+
+        This adds the relevant descriptor, automatically.
+        """
+        descriptor = InterfaceAssociationDescriptorEmitter(collection=self._collection)
         yield descriptor
 
         self.add_subordinate_descriptor(descriptor)
@@ -301,6 +330,25 @@ class DeviceDescriptorCollection:
         fields such as bNumInterfaces aren't necessary; they'll be populated automatically.
         """
         descriptor = ConfigurationDescriptorEmitter(collection=self)
+        yield descriptor
+
+        self.add_descriptor(descriptor)
+
+
+    @contextmanager
+    def BOSDescriptor(self):
+        """ Context manager that allows addition of a Binary Object Store descriptor.
+
+        It can be used with a `with` statement; and yields an BinaryObjectStoreDescriptorEmitter
+        that can be populated:
+
+            with collection.BOSDescriptor() as d:
+                [snip]
+
+        This adds the relevant descriptor, automatically. Note that populating derived
+        fields such as bNumDeviceCaps aren't necessary; they'll be populated automatically.
+        """
+        descriptor = BinaryObjectStoreDescriptorEmitter()
         yield descriptor
 
         self.add_descriptor(descriptor)

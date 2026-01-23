@@ -178,6 +178,7 @@ class DescriptorField(construct.Subconstruct):
         'id'  : construct.Int16ul,
         'bm'  : construct.Int8ul,
         'w'   : construct.Int16ul,
+        'dw'  : construct.Int32ul,
     }
 
 
